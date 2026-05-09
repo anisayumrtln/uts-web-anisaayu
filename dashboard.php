@@ -41,6 +41,7 @@ while($row = mysqli_fetch_assoc($query)) :
         </tr>
 <?php endwhile; 
 ?>
+
     </table>
 </body>
 </html>
