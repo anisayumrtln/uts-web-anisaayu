@@ -36,8 +36,9 @@ while($row = mysqli_fetch_assoc($query)) :
             <td>Rp <?= number_format($row['harga'], 0, ',', '.'); ?></td>
             <td><?= $row['stok']; ?></td>
             <td>
-            <a href="hapus.php?id=<?= $row['id']; ?>" onclick="return confirm('Yakin ingin menghapus data ini?')">Hapus</a>
-        </td>
+                <a href="edit.php?id=<?= $row['id']; ?>">Edit</a> |
+                <a href="hapus.php?id=<?= $row['id']; ?>" onclick="return confirm('Yakin ingin menghapus data ini?')">Hapus</a>
+            </td>
         </tr>
 <?php endwhile; 
 ?>
