@@ -35,7 +35,8 @@ $query = mysqli_query($conn, "SELECT * FROM produk");
                 <a href="hapus.php?id=<?= $row['id']; ?>" onclick="return confirm('Yakin ingin menghapus data ini?')">Hapus</a>
         </td>
         </tr>
-        <?php endwhile; ?>
+        <?php endwhile; 
+        ?>
     </table>
 </body>
 </html>
