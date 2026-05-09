@@ -24,16 +24,16 @@ $query = mysqli_query($conn, "SELECT * FROM produk");
             <th>Nama Barang</th>
             <th>Harga</th>
             <th>Stok</th>
-        </tr>
-        <?php 
-        $no = 1;
-        while($row = mysqli_fetch_assoc($query)) : 
-        ?>
+            <th>Aksi</th> </tr>
+
         <tr>
             <td><?= $no++; ?></td>
             <td><?= $row['nama_barang']; ?></td>
             <td>Rp <?= number_format($row['harga'], 0, ',', '.'); ?></td>
             <td><?= $row['stok']; ?></td>
+            <td>
+                <a href="hapus.php?id=<?= $row['id']; ?>" onclick="return confirm('Yakin ingin menghapus data ini?')">Hapus</a>
+        </td>
         </tr>
         <?php endwhile; ?>
     </table>
