@@ -25,6 +25,10 @@ $query = mysqli_query($conn, "SELECT * FROM produk");
             <th>Harga</th>
             <th>Stok</th>
             <th>Aksi</th> </tr>
+<?php 
+$no = 1; 
+while($row = mysqli_fetch_assoc($query)) : 
+?>
 
         <tr>
             <td><?= $no++; ?></td>
@@ -32,11 +36,11 @@ $query = mysqli_query($conn, "SELECT * FROM produk");
             <td>Rp <?= number_format($row['harga'], 0, ',', '.'); ?></td>
             <td><?= $row['stok']; ?></td>
             <td>
-                <a href="hapus.php?id=<?= $row['id']; ?>" onclick="return confirm('Yakin ingin menghapus data ini?')">Hapus</a>
+            <a href="hapus.php?id=<?= $row['id']; ?>" onclick="return confirm('Yakin ingin menghapus data ini?')">Hapus</a>
         </td>
         </tr>
-        <?php endwhile; 
-        ?>
+<?php endwhile; 
+?>
     </table>
 </body>
 </html>
