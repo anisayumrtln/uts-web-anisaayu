@@ -7,6 +7,6 @@ $db   = "db_minimarket";
 $conn = mysqli_connect($host, $user, $pass, $db);
 
 if (!$conn) {
-    die("Koneksi gagal: " . mysqli_connect_error());
+    die("Koneksi gagal: " . mysqli_connect_error()); 
 }
 ?>
