@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('Asia/Jakarta');
 include 'koneksi.php';
 $query = mysqli_query($conn, "SELECT * FROM produk");
 ?>
