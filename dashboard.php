@@ -30,58 +30,75 @@ $query = mysqli_query($conn, "SELECT * FROM produk");
 <body>
 
     <h2 style="text-align: center; font-size: 32px; color: #1E104E;">Daftar Produk Minimarket</h2>
+
     <div style="background-color: white; padding: 15px; border-radius: 10px; margin: 20px auto; width: 95%; border: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-    
-    <div style="text-align: left;">
-        <form method="POST" style="display: flex; flex-direction: column; gap: 5px;">
-            <label style="color: #666; font-size: 14px;">Petugas Kasir:</label>
-            <div style="display: flex; gap: 5px;">
-                <input type="text" name="nama_baru" placeholder="Ketik nama..." style="padding: 5px; border: 1px solid #ccc; border-radius: 4px;">
-                <button type="submit" style="padding: 5px 10px; background-color: #1E104E; color: white; border: none; border-radius: 4px; cursor: pointer;">Simpan</button>
-            </div>
-            <strong style="font-size: 18px; color: #1E104E; margin-top: 5px;">
-                <?php 
-                    // Logika buat nangkep nama dari inputan
-                    $tampil_nama = isset($_POST['nama_baru']) && !empty($_POST['nama_baru']) ? $_POST['nama_baru'] : "Anisa Ayu";
-                    echo $tampil_nama; 
-                ?>
-            </strong>
-        </form>
+        <div style="text-align: left;">
+            <form method="POST" style="display: flex; flex-direction: column; gap: 5px;">
+                <label style="color: #666; font-size: 14px;">Petugas Kasir:</label>
+                <div style="display: flex; gap: 5px;">
+                    <input type="text" name="nama_baru" placeholder="Ketik nama..." style="padding: 5px; border: 1px solid #ccc; border-radius: 4px;">
+                    <button type="submit" style="padding: 5px 10px; background-color: #1E104E; color: white; border: none; border-radius: 4px; cursor: pointer;">Simpan</button>
+                </div>
+                <strong style="font-size: 18px; color: #1E104E; margin-top: 5px;">
+                    <?php 
+                        $tampil_nama = isset($_POST['nama_baru']) && !empty($_POST['nama_baru']) ? $_POST['nama_baru'] : "Anisa Ayu";
+                        echo $tampil_nama; 
+                    ?>
+                </strong>
+            </form>
+        </div>
+        <div style="text-align: right;">
+            <p style="margin: 0; color: #666; font-size: 14px;">Waktu:</p>
+            <strong style="font-size: 16px; color: #1E104E;"><?php echo date('d F Y | H:i'); ?></strong>
+        </div>
     </div>
-    <div style="text-align: right;">
-        <p style="margin: 0; color: #666; font-size: 14px;">Waktu:</p>
-        <strong style="font-size: 16px; color: #1E104E;"><?php echo date('d F Y | H:i'); ?></strong>
-    </div>
-</div>
+
     <a href="tambah.php" class="tambah">[+] Tambah Barang Baru</a>
-    
-    <table>
+    <form action="proses_beli_banyak.php" method="POST">
+
+<table>
+    <thead>
         <tr>
+            <th>Pilih</th>
             <th>No</th>
             <th>Nama Barang</th>
             <th>Harga</th>
-            <th>Stok</th>
-            <th>Aksi</th> </tr>
-<?php 
-$no = 1; 
-while($row = mysqli_fetch_assoc($query)) : 
-?>
-
+            <th>Jumlah</th> <th>Stok</th>
+            <th>Aksi</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php 
+        $no = 1; 
+        while($row = mysqli_fetch_assoc($query)) : 
+        ?>
         <tr>
+            <td style="text-align: center;">
+                <input type="checkbox" name="id_barang[]" value="<?= $row['id']; ?>" style="transform: scale(1.2);">
+            </td>
             <td><?= $no++; ?></td>
             <td><?= $row['nama_barang']; ?></td>
             <td>Rp <?= number_format($row['harga'], 0, ',', '.'); ?></td>
+            <td>
+                <input type="number" name="jumlah[<?= $row['id']; ?>]" value="1" min="1" max="<?= $row['stok']; ?>" style="width: 50px;">
+            </td>
             <td><?= $row['stok']; ?></td>
             <td>
-                <a href="jual.php?id=<?= $row['id']; ?>" class="btn-jual" style="background-color: #28a745; color: white; padding: 5px 10px; border-radius: 4px; text-decoration: none; font-size: 13px;">Jual</a>
+                <a href="jual.php?id=<?= $row['id']; ?>" class="btn-jual">Jual Saja</a>
                 <a href="edit.php?id=<?= $row['id']; ?>" class="btn-edit">Edit</a>
                 <a href="hapus.php?id=<?= $row['id']; ?>" class="btn-hapus" onclick="return confirm('Yakin ingin menghapus?')">Hapus</a>
-
             </td>
         </tr>
-<?php endwhile; 
-?>
+        <?php endwhile; ?>
+    </tbody>
+</table>
 
-    </table>
+        <div style="text-align: right;">
+            <button type="submit" class="btn-beli-banyak">
+                🛒 Beli Barang yang Dipilih & Cetak Struk
+            </button>
+        </div>
+    </form>
+
 </body>
 </html>

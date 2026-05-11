@@ -19,7 +19,7 @@ $data = mysqli_fetch_assoc($query);
 </head>
 <body onload="window.print()"> <div class="header">
         <h3>MINIMARKET ANISA</h3>
-        <p>Jl. Informatika No. 12024</p>
+        <p>Jl. Jambangan-Suroboyo </p>
         <p><?= date('d/m/Y H:i:s'); ?></p>
     </div>
 
