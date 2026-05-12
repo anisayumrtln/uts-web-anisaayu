@@ -1,4 +1,10 @@
 <?php
+session_start();
+if (!isset($_SESSION['login'])) {
+    header("Location: login.php");
+    exit;
+}
+
 date_default_timezone_set('Asia/Jakarta');
 include 'koneksi.php';
 $query = mysqli_query($conn, "SELECT * FROM produk");
@@ -33,16 +39,14 @@ $query = mysqli_query($conn, "SELECT * FROM produk");
 
     <div style="background-color: white; padding: 15px; border-radius: 10px; margin: 20px auto; width: 95%; border: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
         <div style="text-align: left;">
-            <form method="POST" style="display: flex; flex-direction: column; gap: 5px;">
-                <label style="color: #666; font-size: 14px;">Petugas Kasir:</label>
-                <div style="display: flex; gap: 5px;">
-                    <input type="text" name="nama_baru" placeholder="Ketik nama..." style="padding: 5px; border: 1px solid #ccc; border-radius: 4px;">
-                    <button type="submit" style="padding: 5px 10px; background-color: #1E104E; color: white; border: none; border-radius: 4px; cursor: pointer;">Simpan</button>
-                </div>
+            <div style="color: #666; font-size: 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                <span>Petugas Kasir: <b>Admin</b></span>
+                <a href="logout.php" style="color: red; text-decoration: none; font-weight: bold; border: 1px solid red; padding: 2px 8px; border-radius: 4px;" onclick="return confirm('Yakin ingin keluar?')">Logout</a>
+            </div>
+
                 <strong style="font-size: 18px; color: #1E104E; margin-top: 5px;">
-                    <?php 
-                        $tampil_nama = isset($_POST['nama_baru']) && !empty($_POST['nama_baru']) ? $_POST['nama_baru'] : "Anisa Ayu";
-                        echo $tampil_nama; 
+                    <?php
+                        echo $_SESSION['user']; 
                     ?>
                 </strong>
             </form>
