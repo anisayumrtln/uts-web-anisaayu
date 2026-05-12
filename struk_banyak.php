@@ -40,7 +40,7 @@ $total_akhir = 0;
         }
     </style>
 </head>
-<body onload="window.print()">
+<body 
 
     <div class="header">
         <strong>MINIMARKET ANISA</strong><br>
@@ -74,6 +74,17 @@ $total_akhir = 0;
         <span>TOTAL</span>
         <span>Rp <?= number_format($total_akhir, 0, ',', '.'); ?></span>
     </div>
+    <div class="item-row no-print" style="margin-top: 10px;">
+        <span>Uang Bayar:</span>
+        <input type="number" id="uang_bayar" oninput="hitungKembalian(<?= $total_akhir ?>)" placeholder="Masukkan angka..." style="width: 100px; font-family: monospace;">
+    </div>
+
+    <div class="line"></div>
+
+    <div class="item-row">
+        <span>Kembalian:</span>
+        <span id="teks_kembalian" style="font-weight: bold;">Rp 0</span>
+    </div>
 
     <div class="footer">
         <p>Terima Kasih Telah Belanja!</p>
@@ -81,8 +92,47 @@ $total_akhir = 0;
     </div>
 
     <div class="no-print">
-        <a href="dashboard.php" class="btn">Kembali ke Dashboard</a>
+    <a href="#" onclick="window.print()" class="btn" style="background: #28a745; margin-bottom: 10px;">Cetak Struk Sekarang</a>
+    
+    <a href="dashboard.php" class="btn">Kembali ke Dashboard</a>
     </div>
+
+    <script>
+    const inputBayar = document.getElementById('uang_bayar');
+    inputBayar.addEventListener('keyup', function(e) {
+        let nomor = this.value.replace(/[^,\d]/g, '').toString();
+        let split = nomor.split(',');
+        let sisa = split[0].length % 3;
+        let rupiah = split[0].substr(0, sisa);
+        let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+        if (ribuan) {
+            let separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+
+        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+        this.value = rupiah;
+    
+        hitungKembalian(<?= $total_akhir ?>);
+    });
+
+    function hitungKembalian(total) {
+        let bayarRaw = document.getElementById('uang_bayar').value.replace(/\./g, '');
+        let bayar = parseInt(bayarRaw) || 0;
+    
+        let kembali = bayar - total;
+        let teks = document.getElementById('teks_kembalian');
+
+        if (bayar === 0) {
+            teks.innerText = "Rp 0";
+        } else if (kembali >= 0) {
+            teks.innerText = "Rp " + kembali.toLocaleString('id-ID');
+        } else {
+            teks.innerText = "Rp 0 (Uang Kurang!)";
+        }
+    }
+    </script>
 
 </body>
 </html>

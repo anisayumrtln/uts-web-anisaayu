@@ -91,9 +91,10 @@ $query = mysqli_query($conn, "SELECT * FROM produk");
         </tr>
         <?php endwhile; ?>
     </tbody>
+    
 </table>
-
         <div style="text-align: right;">
+
             <button type="submit" class="btn-beli-banyak">
                 🛒 Beli Barang yang Dipilih & Cetak Struk
             </button>
