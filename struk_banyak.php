@@ -1,4 +1,11 @@
 <?php
+session_start();
+if (!isset($_SESSION['login'])) {
+    header("Location: login.php");
+    exit;
+}
+
+date_default_timezone_set('Asia/Jakarta');
 include 'koneksi.php';
 
 $data = isset($_GET['data']) ? $_GET['data'] : '';
@@ -46,6 +53,7 @@ $total_akhir = 0;
         <strong>MINIMARKET ANISA</strong><br>
         Jl. Jambangan-Suroboyo<br>
         <?= date('d/m/Y H:i:s'); ?>
+        Kasir: <?= $_SESSION['user']; ?>
     </div>
 
     <div class="line"></div>
