@@ -13,97 +13,98 @@ $query = mysqli_query($conn, "SELECT * FROM produk");
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
     <title>Dashboard Kasir - UTS</title>
-    <style>
-        body { font-family: Arial, sans-serif; margin: 20px; background-color: #F8FAFC; }
-        table { border-collapse: collapse; width: 100%; background-color: white; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        th, td { border: 1px solid #020202; padding: 12px; text-align: left; }
-        th { background-color: #89A8B2; color: white; text-transform: uppercase; }
-        tr:nth-child(even) { background-color: #B3C8CF; }
-        tr:nth-child(odd) { background-color: #E9ECEF; }
-        tr:hover { background-color: #F0EBE3; }
-        
-        .tambah { 
-            display: inline-block; padding: 10px 15px; background-color: #81A6C6; 
-            color: white; text-decoration: none; border-radius: 5px; margin-bottom: 15px; font-weight: bold;
-        }
-        
-        .btn-edit { background-color: #9AA6B2; color: black; padding: 5px 10px; border-radius: 4px; text-decoration: none; margin-right: 5px; }
-        .btn-hapus { background-color: #BCCCDC; color: black; padding: 5px 10px; border-radius: 4px; text-decoration: none; }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    
+    <div class="header-modern">
+    <div class="header-left">
+        <h2>DATA PRODUK MINIMARKET</h2>
+        <span class="user-badge">Kasir: <strong><?= $_SESSION['username']; ?></strong></span>
+    </div>
+    <div class="header-right">
+        <a href="logout.php" class="btn-logout">LOGOUT</a>
+    </div>
+</div>
 
-    <h2 style="text-align: center; font-size: 32px; color: #1E104E;">Daftar Produk Minimarket</h2>
-
-    <div style="background-color: white; padding: 15px; border-radius: 10px; margin: 20px auto; width: 95%; border: 1px solid #ddd; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-        <div style="text-align: left;">
-            <div style="color: #666; font-size: 14px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <span>Petugas Kasir: <b>Admin</b></span>
-                <a href="logout.php" style="color: red; text-decoration: none; font-weight: bold; border: 1px solid red; padding: 2px 8px; border-radius: 4px;" onclick="return confirm('Yakin ingin keluar?')">Logout</a>
-            </div>
-
-                <strong style="font-size: 18px; color: #1E104E; margin-top: 5px;">
-                    <?php
-                        echo $_SESSION['user']; 
-                    ?>
-                </strong>
-            </form>
+<div class="stats-action-row">
+    <div class="stat-card blue">
+        <div class="stat-content">
+            <span>Total Stok</span>
+            <h3>
+                <?php 
+                    $total_stok = mysqli_query($conn, "SELECT SUM(stok) as total FROM produk");
+                    $data = mysqli_fetch_assoc($total_stok);
+                    echo number_format($data['total'] ?? 0, 0, ',', '.');
+                ?>
+            </h3>
         </div>
-        <div style="text-align: right;">
-            <p style="margin: 0; color: #666; font-size: 14px;">Waktu:</p>
-            <strong style="font-size: 16px; color: #1E104E;"><?php echo date('d F Y | H:i'); ?></strong>
-        </div>
+        <div class="stat-icon">📦</div>
     </div>
 
-    <a href="tambah.php" class="tambah">[+] Tambah Barang Baru</a>
-    <form action="proses_beli_banyak.php" method="POST">
+    <div class="stat-card green">
+        <div class="stat-content">
+            <span>Jenis Produk</span>
+            <h3>
+                <?php 
+                    $total_produk = mysqli_query($conn, "SELECT COUNT(*) as total FROM produk");
+                    $data = mysqli_fetch_assoc($total_produk);
+                    echo $data['total'] ?? 0;
+                ?>
+            </h3>
+        </div>
+        <div class="stat-icon">🛍️</div>
+    </div>
 
-<table>
-    <thead>
-        <tr>
-            <th>Pilih</th>
-            <th>No</th>
-            <th>Nama Barang</th>
-            <th>Harga</th>
-            <th>Jumlah</th> <th>Stok</th>
-            <th>Aksi</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php 
-        $no = 1; 
-        while($row = mysqli_fetch_assoc($query)) : 
-        ?>
-        <tr>
-            <td style="text-align: center;">
-                <input type="checkbox" name="id_barang[]" value="<?= $row['id']; ?>" style="transform: scale(1.2);">
-            </td>
-            <td><?= $no++; ?></td>
-            <td><?= $row['nama_barang']; ?></td>
-            <td>Rp <?= number_format($row['harga'], 0, ',', '.'); ?></td>
-            <td>
-                <input type="number" name="jumlah[<?= $row['id']; ?>]" value="1" min="1" max="<?= $row['stok']; ?>" style="width: 50px;">
-            </td>
-            <td><?= $row['stok']; ?></td>
-            <td>
-                <a href="jual.php?id=<?= $row['id']; ?>" class="btn-jual">Jual Saja</a>
-                <a href="edit.php?id=<?= $row['id']; ?>" class="btn-edit">Edit</a>
-                <a href="hapus.php?id=<?= $row['id']; ?>" class="btn-hapus" onclick="return confirm('Yakin ingin menghapus?')">Hapus</a>
-            </td>
-        </tr>
-        <?php endwhile; ?>
-    </tbody>
-    
-</table>
-        <div style="text-align: right;">
+    <a href="tambah.php" class="btn-tambah-new">
+        + TAMBAH BARANG BARU
+    </a>
+</div>
 
-            <button type="submit" class="btn-beli-banyak">
+        <form action="proses_beli_banyak.php" method="POST">
+        <table>
+            <thead>
+                <tr>
+                    <th>Pilih</th> <th>No</th>
+                    <th>Gambar</th> 
+                    <th>Nama Barang</th>
+                    <th>Harga</th>
+                    <th>Jumlah Beli</th> <th>Stok</th>
+                    <th>Aksi</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php 
+                $no = 1; 
+                while($row = mysqli_fetch_assoc($query)) : 
+                ?>
+                <tr>
+                    <td style="text-align: center;">
+                        <input type="checkbox" name="id_barang[]" value="<?= $row['id']; ?>">
+                    </td>   
+                    <td><?= $no++; ?></td>
+                    <td>
+                      <img src="img/<?= $row['nama_barang']; ?>.jpeg" width="60" style="border-radius: 8px; border: 1px solid #ddd; object-fit: cover;">
+                    </td>
+                    <td><?= $row['nama_barang']; ?></td>
+                    <td>Rp <?= number_format($row['harga'], 0, ',', '.'); ?></td>
+                    <td>
+                        <input type="number" name="jumlah[<?= $row['id']; ?>]" value="1" min="1" max="<?= $row['stok']; ?>" style="width: 50px;">
+                    </td>
+                    <td><?= $row['stok']; ?></td>
+                    <td>
+                        <a href="jual.php?id=<?= $row['id']; ?>" class="btn-jual">Jual</a>
+                        <a href="edit.php?id=<?= $row['id']; ?>" class="btn-edit">Edit</a>
+                        <a href="hapus.php?id=<?= $row['id']; ?>" class="btn-hapus" onclick="return confirm('Yakin?')">Hapus</a>
+                    </td>
+                </tr>
+                <?php endwhile; ?>
+            </tbody>
+        </table>
+
+            <button type="submit" class="btn tambah" style="margin-top: 20px; cursor: pointer;">
                 🛒 Beli Barang yang Dipilih & Cetak Struk
             </button>
-        </div>
     </form>
-
-</body>
-</html>
+</div>

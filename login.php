@@ -6,18 +6,20 @@ if (isset($_POST['login'])) {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    $query = "SELECT * FROM users WHERE username = '$username' AND password = '$password'";
-    $result = mysqli_query($conn, $query);
-    
-    if (mysqli_num_rows($result) === 1) {
+    $cek = mysqli_query($conn, "SELECT * FROM users WHERE username='$username' AND password='$password'");
+
+    if(mysqli_num_rows($cek) > 0){
         $_SESSION['login'] = true;
-        $_SESSION['user'] = $username;
-        header("Location: dashboard.php");
+        $_SESSION['username'] = $username; 
+        
+        header("location:dashboard.php");
         exit;
+    } else {
+        echo "<script>alert('Username atau password salah!');</script>";
     }
-    $error = true;
 }
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>

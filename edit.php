@@ -28,24 +28,55 @@ if (isset($_POST['update'])) {
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="id">
 <head>
-    <title>Edit Barang - UTS</title>
+    <meta charset="UTF-8">
+    <title>Edit Barang - UTS Anisa</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Tambahan khusus untuk form edit agar rapi di tengah */
+        .container {
+            background-color: white;
+            padding: 30px;
+            border: 2px solid #333;
+            box-shadow: 10px 10px 0px #333;
+            max-width: 400px;
+            margin: 50px auto;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #333;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #1E104E;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: bold;
+        }
+    </style>
 </head>
 <body>
-    <h2>Edit Data Barang</h2>
-    <form method="POST">
-        <label>Nama Barang:</label><br>
-        <input type="text" name="nama_barang" value="<?= $row['nama_barang']; ?>" required><br><br>
-        
-        <label>Harga:</label><br>
-        <input type="number" name="harga" value="<?= $row['harga']; ?>" required><br><br>
-        
-        <label>Stok:</label><br>
-        <input type="number" name="stok" value="<?= $row['stok']; ?>" required><br><br>
-        
-        <button type="submit" name="update">Update Data</button>
-        <a href="dashboard.php">Batal</a>
-    </form>
+    <div class="container">
+        <h2 style="text-align: center; color: #1E104E;">Edit Data Barang</h2>
+        <form method="POST">
+            <label>Nama Barang:</label>
+            <input type="text" name="nama_barang" value="<?= $row['nama_barang']; ?>" required>
+            
+            <label>Harga:</label>
+            <input type="number" name="harga" value="<?= $row['harga']; ?>" required>
+            
+            <label>Stok:</label>
+            <input type="number" name="stok" value="<?= $row['stok']; ?>" required>
+            
+            <button type="submit" name="update">SIMPAN PERUBAHAN</button>
+            <a href="dashboard.php" style="display: block; text-align: center; margin-top: 15px; color: #666; text-decoration: none;">Kembali</a>
+        </form>
+    </div>
 </body>
 </html>
