@@ -277,3 +277,79 @@ table td {
     text-align: center;
     padding: 0 15px;
 }
+
+/* Memberikan warna merah terang khusus untuk stok yang hampir habis */
+td[style*="color: red"] {
+    color: #ff4d4d !important;
+    background-color: #fff5f5; /* Memberi sedikit warna merah muda di background kolomnya */
+    border-radius: 5px;
+}
+
+/* Pastikan kolom aksi tidak membuat tombol berhimpitan */
+.action-columns {
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    white-space: nowrap; /* Biar tombol gak turun ke bawah */
+}
+
+tbody tr:hover {
+    background-color: #f9f9ff; /* Warna ungu sangat muda */
+    transition: 0.2s;
+    transform: scale(1.002); /* Efek sedikit membesar */
+    box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+}
+
+.search-container {
+    margin-bottom: 15px;
+    width: 100%;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 2px solid #E5E7EB;
+    border-radius: 10px;
+    font-size: 14px;
+    outline: none;
+    transition: 0.3s;
+}
+
+.search-input:focus {
+    border-color: #4A3F75; /* Warna ungu sesuai header */
+    box-shadow: 0 0 8px rgba(74, 63, 117, 0.2);
+}
+
+/* Container filter agar rapi ke samping */
+.category-filters {
+    display: flex;
+    gap: 12px;
+    margin: 20px 0;
+    flex-wrap: wrap;
+}
+
+/* Desain dasar tombol filter */
+.btn-filter {
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    color: white;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+.btn-filter:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.1);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+}
+
+/* Warna-warna yang nyambung dengan tema ungu */
+.bg-semua { background-color: #4A3F75; }           /* Ungu sedang */
+.bg-pokok { background-color: #3f336c; }           /* Oranye tua (kontras tapi masuk) */
+.bg-makanan { background-color: #2D4E69; }         /* Biru keabuan */
+.bg-minuman { background-color: #303D60; }         /* Biru gelap */
+.bg-kecantikan { background-color: #483670; }     /* Ungu cerah */
