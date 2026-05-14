@@ -98,6 +98,13 @@ if (isset($_POST['simpan'])) {
         
         <label>Stok</label>
         <input type="number" name="stok" required>
+
+        <label>Kategori:</label>
+        <select name="kategori" required>
+            <option value="Makanan">Makanan</option>
+            <option value="Minuman">Minuman</option>
+            <option value="Kebutuhan Lain">Kebutuhan Lain</option>
+        </select>
         
         <button type="submit" name="simpan">SIMPAN DATA</button>
         <a href="dashboard.php" class="back-link">← Kembali ke Dashboard</a>

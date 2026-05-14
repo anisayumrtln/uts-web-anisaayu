@@ -22,6 +22,16 @@ $query = mysqli_query($conn, "SELECT * FROM produk");
     <div class="header-left">
         <h2>DATA PRODUK MINIMARKET</h2>
         <span class="user-badge">Kasir: <strong><?= $_SESSION['username']; ?></strong></span>
+        <span id="jam" style="margin-left: 15px; font-weight: bold; color: #89A8B2;"></span>
+
+        <script>
+            function updateJam() {
+                const now = new Date();
+                document.getElementById('jam').innerText = now.toLocaleTimeString('id-ID');
+            }
+            setInterval(updateJam, 1000);
+        </script>
+
     </div>
     <div class="header-right">
         <a href="logout.php" class="btn-logout">LOGOUT</a>
@@ -60,22 +70,78 @@ $query = mysqli_query($conn, "SELECT * FROM produk");
     <a href="tambah.php" class="btn-tambah-new">
         + TAMBAH BARANG BARU
     </a>
-</div>
+    <button onclick="window.print()" class="btn-tambah-new" style="background-color: #4A3F75; margin-left: 10px; cursor: pointer;">
+        🖨️ CETAK DATA
+    </button>
+    </div>
 
-        <form action="proses_beli_banyak.php" method="POST">
-        <table>
+    <div class="search-container" style="margin-bottom: 15px;">
+        <input type="text" id="inputCari" onkeyup="cariBarang()" placeholder="🔍 Cari nama barang..." class="search-input" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd;">
+    </div>
+
+    <div class="category-filters">
+        <button onclick="filterKategori('Semua')" class="btn-filter bg-semua">Semua</button>
+        <button onclick="filterKategori('Kebutuhan Pokok')" class="btn-filter bg-pokok">Kebutuhan Pokok</button>
+        <button onclick="filterKategori('Makanan')" class="btn-filter bg-makanan">Makanan</button>
+        <button onclick="filterKategori('Minuman')" class="btn-filter bg-minuman">Minuman</button>
+        <button onclick="filterKategori('Kesehatan & Kecantikan')" class="btn-filter bg-kecantikan">Kesehatan & Kecantikan</button>
+    </div>
+
+<form action="proses_beli_banyak.php" method="POST">
+    <table border="1" cellpadding="10" cellspacing="0">
             <thead>
                 <tr>
-                    <th>Pilih</th> <th>No</th>
+                    <th>Pilih</th> 
+                    <th>No</th>
                     <th>Gambar</th> 
                     <th>Nama Barang</th>
-                    <th>Harga</th>
-                    <th>Jumlah Beli</th> <th>Stok</th>
+                    <th>Kategori</th> <th>Harga</th>
+                    <th>Jumlah Beli</th> 
+                    <th>Stok</th>
                     <th>Aksi</th>
                 </tr>
             </thead>
             <tbody>
-                <?php 
+    
+    <script>
+    function cariBarang() {
+        var input = document.getElementById("inputCari");
+        var filter = input.value.toUpperCase();
+        var table = document.querySelector("table");
+        var tr = table.getElementsByTagName("tr");
+
+        for (var i = 1; i < tr.length; i++) {
+            var td = tr[i].getElementsByTagName("td")[3]; 
+            if (td) {
+                var txtValue = td.textContent || td.innerText;
+                if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+
+    function filterKategori(kat) {
+        var table = document.querySelector("table");
+        var tr = table.getElementsByTagName("tr");
+
+        for (var i = 1; i < tr.length; i++) {
+            var tdKategori = tr[i].getElementsByTagName("td")[4]; // Indeks 4 adalah kolom Kategori
+            if (tdKategori) {
+                var txtValue = tdKategori.textContent || tdKategori.innerText;
+                if (kat === "Semua" || txtValue === kat) {
+                    tr[i].style.display = "";
+                } else {
+                    tr[i].style.display = "none";
+                }
+            }
+        }
+    }
+    </script>
+</body>
+            <?php 
                 $no = 1; 
                 while($row = mysqli_fetch_assoc($query)) : 
                 ?>
@@ -88,16 +154,23 @@ $query = mysqli_query($conn, "SELECT * FROM produk");
                       <img src="img/<?= $row['nama_barang']; ?>.jpeg" width="60" style="border-radius: 8px; border: 1px solid #ddd; object-fit: cover;">
                     </td>
                     <td><?= $row['nama_barang']; ?></td>
+                    <td><?= $row['kategori']; ?></td>
                     <td>Rp <?= number_format($row['harga'], 0, ',', '.'); ?></td>
                     <td>
                         <input type="number" name="jumlah[<?= $row['id']; ?>]" value="1" min="1" max="<?= $row['stok']; ?>" style="width: 50px;">
                     </td>
-                    <td><?= $row['stok']; ?></td>
-                    <td>
-                        <a href="jual.php?id=<?= $row['id']; ?>" class="btn-jual">Jual</a>
+                    <td style="<?= ($row['stok'] < 15) ? 'color: red; font-weight: bold;' : ''; ?>">
+                        <?= $row['stok']; ?>
+                        <?php if($row['stok'] < 15): ?>
+                        <br><small style="font-size: 10px;">(Stok Tipis!)</small>
+                        <?php endif; ?>
+                    </td>
+
+                    <td class="action-columns"> <a href="jual.php?id=<?= $row['id']; ?>" class="btn-jual">Jual</a>
                         <a href="edit.php?id=<?= $row['id']; ?>" class="btn-edit">Edit</a>
                         <a href="hapus.php?id=<?= $row['id']; ?>" class="btn-hapus" onclick="return confirm('Yakin?')">Hapus</a>
                     </td>
+
                 </tr>
                 <?php endwhile; ?>
             </tbody>
