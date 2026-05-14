@@ -9,10 +9,11 @@ if (!isset($_SESSION['username'])) {
 
 if (isset($_POST['simpan'])) {
     $nama  = $_POST['nama_barang'];
+    $kategori = $_POST['kategori'];
     $harga = $_POST['harga'];
     $stok  = $_POST['stok'];
 
-    $query = mysqli_query($conn, "INSERT INTO produk VALUES('', '$nama', '$harga', '$stok')");
+    $query = mysqli_query($conn, "INSERT INTO produk VALUES('', '$nama', '$kategori', '$harga', '$stok')");
     
     if($query){
         header("location:dashboard.php");
@@ -103,7 +104,8 @@ if (isset($_POST['simpan'])) {
         <select name="kategori" required>
             <option value="Makanan">Makanan</option>
             <option value="Minuman">Minuman</option>
-            <option value="Kebutuhan Lain">Kebutuhan Lain</option>
+            <option value="Kebutuhan Pokok">Kebutuhan Pokok</option>
+            <option value="Kesehatan & Kecantikan">Kesehatan & Kecantikan</option>
         </select>
         
         <button type="submit" name="simpan">SIMPAN DATA</button>

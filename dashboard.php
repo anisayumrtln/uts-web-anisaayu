@@ -20,7 +20,8 @@ $query = mysqli_query($conn, "SELECT * FROM produk");
     
     <div class="header-modern">
     <div class="header-left">
-        <h2>DATA PRODUK MINIMARKET</h2>
+        <img src="img/logo_toko.jpeg" alt="Logo Minimarket" style="width: 60px; height: 60px; object-fit: contain; border-radius: 8px;">
+        <h2 style="margin: 0;">DATA PRODUK MINIMARKET</h2>
         <span class="user-badge">Kasir: <strong><?= $_SESSION['username']; ?></strong></span>
         <span id="jam" style="margin-left: 15px; font-weight: bold; color: #89A8B2;"></span>
 

@@ -49,11 +49,11 @@ $total_akhir = 0;
 </head>
 <body 
 
-    <div class="header">
-        <strong>MINIMARKET ANISA</strong><br>
-        Jl. Jambangan-Suroboyo<br>
-        <?= date('d/m/Y H:i:s'); ?>
-        Kasir: <?= $_SESSION['user']; ?>
+    <div style="text-align: center; margin-bottom: 20px;">
+        <img src="img/logo_toko.jpeg" style="width: 80px; margin-bottom: 10px;">
+        <p style="margin: 0;">Jl. Jambangan-Suroboyo</p>
+        <p style="margin: 0;"><?= date('d/m/Y H:i:s'); ?></p>
+        <p style="margin: 0;">Kasir: <?= $_SESSION['username']; ?></p>
     </div>
 
     <div class="line"></div>
