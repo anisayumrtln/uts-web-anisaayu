@@ -8,14 +8,21 @@ if (!isset($_SESSION['login'])) {
 date_default_timezone_set('Asia/Jakarta');
 include 'koneksi.php';
 
-$data = isset($_GET['data']) ? $_GET['data'] : '';
+$metode = $_POST['metode_bayar'] ?? 'Tunai';
+$id_barang_pilih = $_POST['id_barang'] ?? [];
+$jumlah_pilih = $_POST['jumlah'] ?? [];
 
-if ($data == '') {
-    header("location:dashboard.php");
+if (empty($id_barang_pilih)) {
+    echo "<script>alert('Pilih barang terlebih dahulu!'); window.location='dashboard.php';</script>";
     exit;
 }
 
-$items = explode(',', $data);
+$items = [];
+foreach ($id_barang_pilih as $id) {
+    $qty = $jumlah_pilih[$id];
+    $items[] = "$id:$qty";
+}
+
 $total_akhir = 0;
 ?>
 
@@ -54,7 +61,6 @@ $total_akhir = 0;
         <p style="margin: 0;">Jl. Jambangan-Suroboyo</p>
         <p style="margin: 0;"><?= date('d/m/Y H:i:s'); ?></p>
         <p style="margin: 0;">Kasir: <?= $_SESSION['username']; ?></p>
-    </div>
 
     <div class="line"></div>
 
@@ -87,12 +93,34 @@ $total_akhir = 0;
         <input type="number" id="uang_bayar" oninput="hitungKembalian(<?= $total_akhir ?>)" placeholder="Masukkan angka..." style="width: 100px; font-family: monospace;">
     </div>
 
+    <div class="item-row">
+        <span>Metode Pembayaran:</span>
+        <span style="font-weight: bold;"><?= $metode; ?></span>
+    </div>
+
     <div class="line"></div>
 
     <div class="item-row">
         <span>Kembalian:</span>
         <span id="teks_kembalian" style="font-weight: bold;">Rp 0</span>
     </div>
+
+    <div class="line"></div>
+
+    <?php if ($metode == 'QRIS'): ?>
+        <div style="text-align: center; margin-top: 20px;">
+            <p><strong>Silakan Scan QRIS di Bawah:</strong></p>
+            <img src="img/qris.jpeg" alt="QRIS Pembayaran" style="width: 180px; border: 1px solid #ddd; padding: 5px;">
+            <p style="font-size: 10px;">Minimarket Anisa - Payment Gateway</p>
+        </div>
+        <div class="line"></div>
+    <?php elseif ($metode == 'Transfer'): ?>
+    <div style="text-align: center; margin-top: 15px;">
+        <p><strong>Transfer ke Rekening:</strong></p>
+        <p>BCA: 1234567890<br> Anisa Ayu</p>
+    </div>
+    <div class="line"></div>
+    <?php endif; ?>
 
     <div class="footer">
         <p>Terima Kasih Telah Belanja!</p>

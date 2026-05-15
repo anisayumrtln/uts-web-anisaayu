@@ -88,8 +88,8 @@ $query = mysqli_query($conn, "SELECT * FROM produk");
         <button onclick="filterKategori('Kesehatan & Kecantikan')" class="btn-filter bg-kecantikan">Kesehatan & Kecantikan</button>
     </div>
 
-<form action="proses_beli_banyak.php" method="POST">
-    <table border="1" cellpadding="10" cellspacing="0">
+    <form action="struk_banyak.php" method="POST">
+        <table class="modern-table">
             <thead>
                 <tr>
                     <th>Pilih</th> 
@@ -177,8 +177,17 @@ $query = mysqli_query($conn, "SELECT * FROM produk");
             </tbody>
         </table>
 
-            <button type="submit" class="btn tambah" style="margin-top: 20px; cursor: pointer;">
-                🛒 Beli Barang yang Dipilih & Cetak Struk
-            </button>
+        <div style="margin-top: 20px;">
+            <label for="metode_bayar"><strong>Metode Pembayaran:</strong></label>
+            <select name="metode_bayar" id="metode_bayar" style="padding: 5px; border-radius: 5px;">
+                <option value="Tunai">Tunai</option>
+                <option value="QRIS">QRIS</option>
+                <option value="Transfer">Transfer Bank</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn tambah" style="margin-top: 20px; cursor: pointer;">
+            🛒 Beli Barang yang Dipilih & Cetak Struk
+        </button>
     </form>
 </div>
