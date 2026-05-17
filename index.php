@@ -16,7 +16,7 @@
             background-color: white;
             padding: 40px;
             border: 2px solid black;
-            box-shadow: 10px 10px 0px #1E104E; /* Shadow ungu tua */
+            box-shadow: 10px 10px 0px #1E104E; 
             text-align: center;
             max-width: 500px;
         }
