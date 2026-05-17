@@ -200,20 +200,18 @@ table thead tr {
     color: white;
 }
 
-/* Container untuk tombol yang terpisah */
 .action-bar {
     display: flex;
-    justify-content: flex-end; /* Membuat tombol berada di sebelah kanan */
-    margin: 20px 0; /* Jarak antara header atas dan tabel bawah */
+    justify-content: flex-end; 
+    margin: 20px 0; 
     padding-right: 5px;
 }
 
-/* Desain tombol kotak sendiri */
 .btn-tambah-baru {
-    background-color: #1E104E; /* Warna ungu tua */
+    background-color: #1E104E; 
     color: white !important;
     padding: 12px 25px;
-    border-radius: 10px; /* Bentuk kotak sedikit membulat */
+    border-radius: 10px; 
     text-decoration: none;
     font-weight: bold;
     box-shadow: 0 4px 12px rgba(30, 16, 78, 0.2);
@@ -240,14 +238,14 @@ table td {
 
 .stats-action-row {
     display: flex;
-    gap: 20px; /* Jarak antar kotak sedikit diperlebar agar lega */
+    gap: 20px; 
     align-items: stretch;
     margin: 20px 0;
     width: 100%;
 }
 
 .stat-card {
-    width: 280px; /* Angka ini dinaikkan dari sebelumnya agar lebih gede */
+    width: 280px; 
     padding: 20px 25px;
     border-radius: 15px;
     color: white;
@@ -263,7 +261,7 @@ table td {
 .stat-content h3 { margin: 5px 0 0 0; font-size: 22px; }
 
 .btn-tambah-new {
-    width: 160px; /* Angka ini diturunkan agar lebih kecil dari kotak stat */
+    width: 160px; 
     background-color: #352274;
     color: white !important;
     text-decoration: none;
@@ -272,31 +270,29 @@ table td {
     justify-content: center;
     border-radius: 12px;
     font-weight: bold;
-    font-size: 12px; /* Ukuran font dikecilkan sedikit agar proporsional */
-    margin-left: auto; /* Tetap di paling kanan */
+    font-size: 12px; 
+    margin-left: auto; 
     text-align: center;
     padding: 0 15px;
 }
 
-/* Memberikan warna merah terang khusus untuk stok yang hampir habis */
 td[style*="color: red"] {
     color: #ff4d4d !important;
-    background-color: #fff5f5; /* Memberi sedikit warna merah muda di background kolomnya */
+    background-color: #fff5f5; 
     border-radius: 5px;
 }
 
-/* Pastikan kolom aksi tidak membuat tombol berhimpitan */
 .action-columns {
     display: flex;
     gap: 5px;
     justify-content: center;
-    white-space: nowrap; /* Biar tombol gak turun ke bawah */
+    white-space: nowrap; 
 }
 
 tbody tr:hover {
-    background-color: #f9f9ff; /* Warna ungu sangat muda */
+    background-color: #f9f9ff; 
     transition: 0.2s;
-    transform: scale(1.002); /* Efek sedikit membesar */
+    transform: scale(1.002); 
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
 
@@ -316,11 +312,10 @@ tbody tr:hover {
 }
 
 .search-input:focus {
-    border-color: #4A3F75; /* Warna ungu sesuai header */
+    border-color: #4A3F75; 
     box-shadow: 0 0 8px rgba(74, 63, 117, 0.2);
 }
 
-/* Container filter agar rapi ke samping */
 .category-filters {
     display: flex;
     gap: 12px;
@@ -328,7 +323,6 @@ tbody tr:hover {
     flex-wrap: wrap;
 }
 
-/* Desain dasar tombol filter */
 .btn-filter {
     border: none;
     padding: 10px 20px;
@@ -347,9 +341,8 @@ tbody tr:hover {
     box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 }
 
-/* Warna-warna yang nyambung dengan tema ungu */
-.bg-semua { background-color: #4A3F75; }           /* Ungu sedang */
-.bg-pokok { background-color: #3f336c; }           /* Oranye tua (kontras tapi masuk) */
-.bg-makanan { background-color: #2D4E69; }         /* Biru keabuan */
-.bg-minuman { background-color: #303D60; }         /* Biru gelap */
-.bg-kecantikan { background-color: #483670; }     /* Ungu cerah */
+.bg-semua { background-color: #4A3F75; }           
+.bg-pokok { background-color: #3f336c; }           
+.bg-makanan { background-color: #2D4E69; }         
+.bg-minuman { background-color: #303D60; }         
+.bg-kecantikan { background-color: #483670; }     
