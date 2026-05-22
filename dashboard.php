@@ -1,5 +1,7 @@
-<?php
+<?php 
+ob_start();
 session_start();
+
 if (!isset($_SESSION['login'])) {
     header("Location: login.php");
     exit;
@@ -7,187 +9,79 @@ if (!isset($_SESSION['login'])) {
 
 date_default_timezone_set('Asia/Jakarta');
 include 'koneksi.php';
-$query = mysqli_query($conn, "SELECT * FROM produk");
+
+include 'layouts/header.php'; 
+include 'layouts/navbar.php'; 
 ?>
 
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <title>Dashboard Kasir - UTS</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    
-    <div class="header-modern">
-    <div class="header-left">
-        <img src="img/logo_toko.jpeg" alt="Logo Minimarket" style="width: 60px; height: 60px; object-fit: contain; border-radius: 8px;">
-        <h2 style="margin: 0;">DATA PRODUK MINIMARKET</h2>
-        <span class="user-badge">Kasir: <strong><?= $_SESSION['username']; ?></strong></span>
-        <span id="jam" style="margin-left: 15px; font-weight: bold; color: #89A8B2;"></span>
+<style>
+    .preloader { display: none !important; opacity: 0 !important; visibility: hidden !important; }
+    body { background-color: #f4f7f6 !important; }
+    .main-content-area { display: block !important; width: 100% !important; padding-top: 50px !important; padding-bottom: 20px !important; }
+    .custom-container { width: 90% !important; max-width: 1200px !important; margin: 0 auto !important; }
+    .welcome-box { background: #ffffff; padding: 40px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); text-align: center; margin-bottom: 30px; }
+</style>
 
-        <script>
-            function updateJam() {
-                const now = new Date();
-                document.getElementById('jam').innerText = now.toLocaleTimeString('id-ID');
-            }
-            setInterval(updateJam, 1000);
-        </script>
+<div class="main-content-area">
+    <div class="custom-container">
+        
+        <div class="welcome-box">
+            <img src="img/logo_toko.jpeg" alt="Logo Toko" style="width: 120px; height: 120px; object-fit: contain; margin-bottom: 20px; border-radius: 50%; border: 3px solid #007bff; padding: 5px;">
+            <h1 style="font-weight: 700; color: #222; margin-bottom: 10px;">Selamat Datang di Sistem Kasir</h1>
+            <p style="font-size: 18px; color: #666; margin-bottom: 25px;">Halo <strong><?= $_SESSION['username'] ?? 'Anisa'; ?></strong>, Anda login sebagai Kasir hari ini.</p>
+            <span id="jam_besar" style="font-size: 20px; font-weight: bold; background: #e8f4fd; color: #007bff; padding: 10px 25px; border-radius: 30px; display: inline-block;"></span>
+        </div>
 
-    </div>
-    <div class="header-right">
-        <a href="logout.php" class="btn-logout">LOGOUT</a>
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 30px;">
+            <div style="flex: 1; min-width: 220px; background: #007bff; color: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <span style="font-size: 15px; opacity: 0.9;">Total Stok Barang</span>
+                <h3 style="margin: 5px 0 0 0; font-size: 32px; font-weight: bold;">
+                    <?php 
+                        $total_stok = mysqli_query($conn, "SELECT SUM(stok) as total FROM produk");
+                        $data_stok = mysqli_fetch_assoc($total_stok);
+                        echo number_format($data_stok['total'] ?? 0, 0, ',', '.');
+                    ?>
+                </h3>
+            </div>
+            <div style="flex: 1; min-width: 220px; background: #28a745; color: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <span style="font-size: 15px; opacity: 0.9;">Total Jenis Produk</span>
+                <h3 style="margin: 5px 0 0 0; font-size: 32px; font-weight: bold;">
+                    <?php 
+                        $total_produk = mysqli_query($conn, "SELECT COUNT(*) as total FROM produk");
+                        $data_prod = mysqli_fetch_assoc($total_produk);
+                        echo $data_prod['total'] ?? 0;
+                    ?>
+                </h3>
+            </div>
+            <div style="flex: 1; min-width: 220px; background: #ffc107; color: #212529; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <span style="font-size: 15px; font-weight: 600; opacity: 0.9;">Status Printer Kasir</span>
+                <h3 style="margin: 12px 0 0 0; font-size: 26px; font-weight: bold;">Ready ✅</h3>
+            </div>
+            <div style="flex: 1; min-width: 220px; background: #dc3545; color: white; padding: 25px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                <span style="font-size: 15px; opacity: 0.9;">Shift Kerja Aktif</span>
+                <?php 
+                    $jam = (int)date('H');
+                    if ($jam >= 6 && $jam < 14) { $shift = "Pagi <span style='font-size:12px;'>(06:00-14:00)</span>"; }
+                    elseif ($jam >= 14 && $jam < 22) { $shift = "Siang <span style='font-size:12px;'>(14:00-22:00)</span>"; }
+                    else { $shift = "Malam <span style='font-size:12px;'>(22:00-06:00)</span>"; }
+                ?>
+                <h3 style="margin: 8px 0 0 0; font-size: 22px; font-weight: bold;"><?= $shift; ?></h3>
+            </div>
+        </div>
+
     </div>
 </div>
 
-<div class="stats-action-row">
-    <div class="stat-card blue">
-        <div class="stat-content">
-            <span>Total Stok</span>
-            <h3>
-                <?php 
-                    $total_stok = mysqli_query($conn, "SELECT SUM(stok) as total FROM produk");
-                    $data = mysqli_fetch_assoc($total_stok);
-                    echo number_format($data['total'] ?? 0, 0, ',', '.');
-                ?>
-            </h3>
-        </div>
-        <div class="stat-icon">📦</div>
-    </div>
+<script>
+function updateJamBesar() {
+    const now = new Date();
+    document.getElementById('jam_besar').innerText = "Waktu Digital: " + now.toLocaleTimeString('id-ID') + " WIB";
+}
+setInterval(updateJamBesar, 1000);
+updateJamBesar();
+</script>
 
-    <div class="stat-card green">
-        <div class="stat-content">
-            <span>Jenis Produk</span>
-            <h3>
-                <?php 
-                    $total_produk = mysqli_query($conn, "SELECT COUNT(*) as total FROM produk");
-                    $data = mysqli_fetch_assoc($total_produk);
-                    echo $data['total'] ?? 0;
-                ?>
-            </h3>
-        </div>
-        <div class="stat-icon">🛍️</div>
-    </div>
-
-    <a href="tambah.php" class="btn-tambah-new">
-        + TAMBAH BARANG BARU
-    </a>
-    <button onclick="window.print()" class="btn-tambah-new" style="background-color: #4A3F75; margin-left: 10px; cursor: pointer;">
-        🖨️ CETAK DATA
-    </button>
-    </div>
-
-    <div class="search-container" style="margin-bottom: 15px;">
-        <input type="text" id="inputCari" onkeyup="cariBarang()" placeholder="🔍 Cari nama barang..." class="search-input" style="width: 100%; padding: 12px; border-radius: 10px; border: 1px solid #ddd;">
-    </div>
-
-    <div class="category-filters">
-        <button onclick="filterKategori('Semua')" class="btn-filter bg-semua">Semua</button>
-        <button onclick="filterKategori('Kebutuhan Pokok')" class="btn-filter bg-pokok">Kebutuhan Pokok</button>
-        <button onclick="filterKategori('Makanan')" class="btn-filter bg-makanan">Makanan</button>
-        <button onclick="filterKategori('Minuman')" class="btn-filter bg-minuman">Minuman</button>
-        <button onclick="filterKategori('Kesehatan & Kecantikan')" class="btn-filter bg-kecantikan">Kesehatan & Kecantikan</button>
-    </div>
-
-    <form action="struk_banyak.php" method="POST">
-        <table class="modern-table">
-            <thead>
-                <tr>
-                    <th>Pilih</th> 
-                    <th>No</th>
-                    <th>Gambar</th> 
-                    <th>Nama Barang</th>
-                    <th>Kategori</th> <th>Harga</th>
-                    <th>Jumlah Beli</th> 
-                    <th>Stok</th>
-                    <th>Aksi</th>
-                </tr>
-            </thead>
-            <tbody>
-    
-    <script>
-    function cariBarang() {
-        var input = document.getElementById("inputCari");
-        var filter = input.value.toUpperCase();
-        var table = document.querySelector("table");
-        var tr = table.getElementsByTagName("tr");
-
-        for (var i = 1; i < tr.length; i++) {
-            var td = tr[i].getElementsByTagName("td")[3]; 
-            if (td) {
-                var txtValue = td.textContent || td.innerText;
-                if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                    tr[i].style.display = "";
-                } else {
-                    tr[i].style.display = "none";
-                }
-            }
-        }
-    }
-
-    function filterKategori(kat) {
-        var table = document.querySelector("table");
-        var tr = table.getElementsByTagName("tr");
-
-        for (var i = 1; i < tr.length; i++) {
-            var tdKategori = tr[i].getElementsByTagName("td")[4]; // Indeks 4 adalah kolom Kategori
-            if (tdKategori) {
-                var txtValue = tdKategori.textContent || tdKategori.innerText;
-                if (kat === "Semua" || txtValue === kat) {
-                    tr[i].style.display = "";
-                } else {
-                    tr[i].style.display = "none";
-                }
-            }
-        }
-    }
-    </script>
-</body>
-            <?php 
-                $no = 1; 
-                while($row = mysqli_fetch_assoc($query)) : 
-                ?>
-                <tr>
-                    <td style="text-align: center;">
-                        <input type="checkbox" name="id_barang[]" value="<?= $row['id']; ?>">
-                    </td>   
-                    <td><?= $no++; ?></td>
-                    <td>
-                      <img src="img/<?= $row['nama_barang']; ?>.jpeg" width="60" style="border-radius: 8px; border: 1px solid #ddd; object-fit: cover;">
-                    </td>
-                    <td><?= $row['nama_barang']; ?></td>
-                    <td><?= $row['kategori']; ?></td>
-                    <td>Rp <?= number_format($row['harga'], 0, ',', '.'); ?></td>
-                    <td>
-                        <input type="number" name="jumlah[<?= $row['id']; ?>]" value="1" min="1" max="<?= $row['stok']; ?>" style="width: 50px;">
-                    </td>
-                    <td style="<?= ($row['stok'] < 15) ? 'color: red; font-weight: bold;' : ''; ?>">
-                        <?= $row['stok']; ?>
-                        <?php if($row['stok'] < 15): ?>
-                        <br><small style="font-size: 10px;">(Stok Tipis!)</small>
-                        <?php endif; ?>
-                    </td>
-
-                    <td class="action-columns"> <a href="jual.php?id=<?= $row['id']; ?>" class="btn-jual">Jual</a>
-                        <a href="edit.php?id=<?= $row['id']; ?>" class="btn-edit">Edit</a>
-                        <a href="hapus.php?id=<?= $row['id']; ?>" class="btn-hapus" onclick="return confirm('Yakin?')">Hapus</a>
-                    </td>
-
-                </tr>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
-
-        <div style="margin-top: 20px;">
-            <label for="metode_bayar"><strong>Metode Pembayaran:</strong></label>
-            <select name="metode_bayar" id="metode_bayar" style="padding: 5px; border-radius: 5px;">
-                <option value="Tunai">Tunai</option>
-                <option value="QRIS">QRIS</option>
-                <option value="Transfer">Transfer Bank</option>
-            </select>
-        </div>
-
-        <button type="submit" class="btn tambah" style="margin-top: 20px; cursor: pointer;">
-            🛒 Beli Barang yang Dipilih & Cetak Struk
-        </button>
-    </form>
-</div>
+<?php 
+include 'layouts/footer.php'; 
+ob_end_flush();
+?>

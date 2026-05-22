@@ -54,13 +54,15 @@ $total_akhir = 0;
         }
     </style>
 </head>
-<body 
+<body>
 
-    <div style="text-align: center; margin-bottom: 20px;">
-        <img src="img/logo_toko.jpeg" style="width: 80px; margin-bottom: 10px;">
+    <div class="header">
+        <img src="img/logo_toko.jpeg" style="width: 80px; height: 80px; object-fit: contain; margin-bottom: 10px;">
+        <h3 style="margin: 5px 0; font-weight: bold;">MINIMARKET ANISA</h3>
         <p style="margin: 0;">Jl. Jambangan-Suroboyo</p>
         <p style="margin: 0;"><?= date('d/m/Y H:i:s'); ?></p>
-        <p style="margin: 0;">Kasir: <?= $_SESSION['username']; ?></p>
+        <p style="margin: 0;">Kasir: <?= $_SESSION['username'] ?? 'Anisa'; ?></p>
+    </div>
 
     <div class="line"></div>
 
@@ -68,7 +70,7 @@ $total_akhir = 0;
     foreach ($items as $item) : 
         $pecah = explode(':', $item); 
         $id = $pecah[0];
-        $qty = $pecah[1];
+        $qty = (int)$pecah[1];
 
         $query = mysqli_query($conn, "SELECT * FROM produk WHERE id = $id");
         $row = mysqli_fetch_assoc($query);
@@ -76,50 +78,61 @@ $total_akhir = 0;
         $subtotal = $row['harga'] * $qty;
         $total_akhir += $subtotal;
     ?>
-        <div class="item-row">
-            <span><?= $row['nama_barang']; ?> (x<?= $qty ?>)</span>
+        <div style="display: flex; justify-content: space-between; font-size: 13px; margin-top: 5px;">
+            <span style="font-weight: bold;"><?= $row['nama_barang']; ?></span>
             <span>Rp <?= number_format($subtotal, 0, ',', '.'); ?></span>
         </div>
+        
+        <?php if ($qty > 1): ?>
+            <div style="font-size: 12px; color: #555; padding-left: 5px; margin-bottom: 5px; text-align: left;">
+                x<?= $qty; ?> @ Rp <?= number_format($row['harga'], 0, ',', '.'); ?>
+            </div>
+        <?php endif; ?>
+        
     <?php endforeach; ?>
 
     <div class="line"></div>
 
-    <div class="item-row total">
+    <div class="item-row" style="font-weight: bold;">
         <span>TOTAL</span>
         <span>Rp <?= number_format($total_akhir, 0, ',', '.'); ?></span>
     </div>
-    <div class="item-row no-print" style="margin-top: 10px;">
-        <span>Uang Bayar:</span>
-        <input type="number" id="uang_bayar" oninput="hitungKembalian(<?= $total_akhir ?>)" placeholder="Masukkan angka..." style="width: 100px; font-family: monospace;">
-    </div>
 
     <div class="item-row">
-        <span>Metode Pembayaran:</span>
-        <span style="font-weight: bold;"><?= $metode; ?></span>
+        <span>METODE BAYAR</span>
+        <span style="font-weight: bold; text-transform: uppercase;"><?= $metode; ?></span>
     </div>
 
-    <div class="line"></div>
-
-    <div class="item-row">
-        <span>Kembalian:</span>
-        <span id="teks_kembalian" style="font-weight: bold;">Rp 0</span>
-    </div>
+    <?php if ($metode == 'Tunai') : ?>
+        <div class="item-row no-print" style="margin-top: 5px; margin-bottom: 5px;">
+            <span>TUNAI (INPUT)</span>
+            <input type="text" id="uang_bayar" placeholder="Masukkan angka..." style="width: 110px; font-family: monospace; text-align: right;">
+        </div>
+        
+        <div class="line" style="border-top: 1px dotted #000; margin: 5px 0;"></div>
+        
+        <div class="item-row" style="font-weight: bold; font-size: 15px;">
+            <span>KEMBALIAN</span>
+            <span id="teks_kembalian">Rp 0</span>
+        </div>
+    <?php endif; ?>
 
     <div class="line"></div>
 
     <?php if ($metode == 'QRIS'): ?>
-        <div style="text-align: center; margin-top: 20px;">
-            <p><strong>Silakan Scan QRIS di Bawah:</strong></p>
-            <img src="img/qris.jpeg" alt="QRIS Pembayaran" style="width: 180px; border: 1px solid #ddd; padding: 5px;">
-            <p style="font-size: 10px;">Minimarket Anisa - Payment Gateway</p>
+        <div style="text-align: center; margin-top: 15px;">
+            <p style="margin: 5px 0;"><strong>Silakan Scan QRIS di Bawah:</strong></p>
+            <img src="img/qris.jpeg" alt="QRIS Pembayaran" style="width: 160px; border: 1px solid #ddd; padding: 5px;">
+            <p style="font-size: 10px; color: #555; margin-top: 5px;">Minimarket Anisa - Payment Gateway</p>
         </div>
         <div class="line"></div>
     <?php elseif ($metode == 'Transfer'): ?>
-    <div style="text-align: center; margin-top: 15px;">
-        <p><strong>Transfer ke Rekening:</strong></p>
-        <p>BCA: 1234567890<br> Anisa Ayu</p>
-    </div>
-    <div class="line"></div>
+        <div style="text-align: center; margin-top: 15px;">
+            <p style="margin: 5px 0;"><strong>Transfer ke Rekening:</strong></p>
+            <p style="margin: 0; font-weight: bold;">BCA: 1234567890</p>
+            <p style="margin: 0;">Anisa Ayu</p>
+        </div>
+        <div class="line"></div>
     <?php endif; ?>
 
     <div class="footer">
@@ -128,30 +141,31 @@ $total_akhir = 0;
     </div>
 
     <div class="no-print">
-    <a href="#" onclick="window.print()" class="btn" style="background: #28a745; margin-bottom: 10px;">Cetak Struk Sekarang</a>
-    
-    <a href="dashboard.php" class="btn">Kembali ke Dashboard</a>
+        <a href="#" onclick="window.print()" class="btn" style="background: #28a745; margin-bottom: 10px;">Cetak Struk Sekarang</a>
+        <a href="dashboard.php" class="btn">Kembali ke Dashboard</a>
     </div>
 
     <script>
     const inputBayar = document.getElementById('uang_bayar');
-    inputBayar.addEventListener('keyup', function(e) {
-        let nomor = this.value.replace(/[^,\d]/g, '').toString();
-        let split = nomor.split(',');
-        let sisa = split[0].length % 3;
-        let rupiah = split[0].substr(0, sisa);
-        let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+    if (inputBayar) {
+        inputBayar.addEventListener('keyup', function(e) {
+            let nomor = this.value.replace(/[^,\d]/g, '').toString();
+            let split = nomor.split(',');
+            let sisa = split[0].length % 3;
+            let rupiah = split[0].substr(0, sisa);
+            let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
 
-        if (ribuan) {
-            let separator = sisa ? '.' : '';
-            rupiah += separator + ribuan.join('.');
-        }
+            if (ribuan) {
+                let separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
 
-        rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-        this.value = rupiah;
-    
-        hitungKembalian(<?= $total_akhir ?>);
-    });
+            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+            this.value = rupiah;
+        
+            hitungKembalian(<?= $total_akhir ?>);
+        });
+    }
 
     function hitungKembalian(total) {
         let bayarRaw = document.getElementById('uang_bayar').value.replace(/\./g, '');
