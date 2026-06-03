@@ -45,39 +45,46 @@ if (isset($_GET['hapus'])) {
     }
 }
 
-include 'layouts/header.php'; 
-include 'layouts/navbar.php'; 
+include 'layouts/header.php';
+include 'layouts/navbar.php';
+
+$query = mysqli_query($conn, "SELECT * FROM produk ORDER BY id ASC");
 ?>
 
-<div style="padding-top: 130px; padding-bottom: 5px; background-color: #f4f7f6; min-height: 100vh;">
-    <div style="width: 90%; max-width: 1200px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+<?php if (isset($_GET['status'])): ?>
+    <?php 
+        $pesan = "";
+        if ($_GET['status'] == 'sukses_tambah') {
+            $pesan = "Berhasil! Produk baru telah ditambahkan ke toko.";
+        } elseif ($_GET['status'] == 'sukses_edit') {
+            $pesan = "Berhasil! Data produk telah diperbarui.";
+        } elseif ($_GET['status'] == 'sukses_hapus') {
+            $pesan = "Berhasil! Produk telah dihapus dari sistem.";
+        }
+    ?>
+    <?php if ($pesan != ""): ?>
+        <script>
+            alert("<?= $pesan; ?>");
+            window.location.href = "kelola_produk.php";
+        </script>
+    <?php endif; ?>
+<?php endif; ?>
+
+<div style="padding-top: 20px; padding-bottom: 40px; background-color: #f4f7f6; min-height: 100vh; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin-top: 0px;">
+    <div style="width: 95%; max-width: 1100px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
         
-        <h2 style="font-weight: bold; color: #1E104E; margin-bottom: 25px; text-align: center;">Data Produk & Manajemen Stok Barang</h2>
+        <h2 style="font-weight: bold; color: #1E104E; margin-bottom: 5px; text-align: center;">Kelola Stok & Data Produk</h2>
 
-        <?php if (isset($_GET['status'])): ?>
-            <div style="padding: 12px; margin-bottom: 20px; border-radius: 6px; font-weight: 500; text-align: center;
-                <?= $_GET['status'] == 'sukses_tambah' ? 'background:#d4edda; color:#155724;' : '' ?>
-                <?= $_GET['status'] == 'sukses_edit' ? 'background:#cce5ff; color:#004085;' : '' ?>
-                <?= $_GET['status'] == 'sukses_hapus' ? 'background:#f8d7da; color:#721c24;' : '' ?>">
-                <?php 
-                    if($_GET['status'] == 'sukses_tambah') echo " Produk baru berhasil ditambahkan!";
-                    if($_GET['status'] == 'sukses_edit') echo " Data produk berhasil diperbarui!";
-                    if($_GET['status'] == 'sukses_hapus') echo " Produk berhasil dihapus dari sistem!";
-                ?>
-            </div>
-        <?php endif; ?>
-
-        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; margin-bottom: 30px; border: 1px solid #e9ecef;">
-            <h4 style="margin-top: 0; margin-bottom: 15px; color: #333; font-size: 16px; font-weight: bold;">➕ Tambah Produk Baru</h4>
+        <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #e9ecef; margin-bottom: 30px;">
+            <h4 style="margin-top: 0; margin-bottom: 15px; color: #1E104E;">➕ Tambah Produk Baru</h4>
             <form action="kelola_produk.php" method="POST" style="display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end;">
                 <div style="flex: 2; min-width: 200px;">
-                    <label style="display:block; font-size:12px; font-weight:bold; margin-bottom:5px;">Nama Barang:</label>
-                    <input type="text" name="nama_barang"required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                    <label style="display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px;">Nama Barang:</label>
+                    <input type="text" name="nama_barang" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
                 </div>
-                
                 <div style="flex: 1.5; min-width: 150px;">
-                    <label style="display:block; font-size:12px; font-weight:bold; margin-bottom:5px;">Kategori:</label>
-                    <select name="kategori" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; background: white;">
+                    <label style="display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px;">Kategori:</label>
+                    <select name="kategori" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; background: white; box-sizing: border-box; height: 34px;">
                         <option value="">-- Pilih Kategori --</option>
                         <option value="Makanan">Makanan</option>
                         <option value="Minuman">Minuman</option>
@@ -85,121 +92,102 @@ include 'layouts/navbar.php';
                         <option value="Kosmetik">Kosmetik</option>
                     </select>
                 </div>
-
-                <div style="flex: 1; min-width: 120px;">
-                    <label style="display:block; font-size:12px; font-weight:bold; margin-bottom:5px;">Harga (Rp):</label>
-                    <input type="number" name="harga" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <div style="flex: 1.2; min-width: 120px;">
+                    <label style="display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px;">Harga (Rp):</label>
+                    <input type="number" name="harga" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
                 </div>
-                <div style="flex: 1; min-width: 90px;">
-                    <label style="display:block; font-size:12px; font-weight:bold; margin-bottom:5px;">Stok:</label>
-                    <input type="number" name="stok" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <div style="flex: 1; min-width: 80px;">
+                    <label style="display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px;">Stok:</label>
+                    <input type="number" name="stok" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
                 </div>
-                <div style="flex: 1; min-width: 130px;">
-                    <button type="submit" name="tambah_produk" style="width:100%; padding: 9px; background: #28a745; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer;">
-                        Simpan Produk
-                    </button>
-                </div>
+                <button type="submit" name="tambah_produk" style="padding: 9px 20px; background: #28a745; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; height: 34px;">
+                    Simpan Produk
+                </button>
             </form>
         </div>
 
-        <hr style="border: 0; border-top: 1px solid #eee; margin-bottom: 25px;">
-
-        <div style="margin-bottom: 25px; display: flex; gap: 10px; flex-wrap: wrap;">
-            <?php $kategori_aktif = $_GET['filter'] ?? 'Semua'; ?>
-            
-            <a href="kelola_produk.php" style="text-decoration: none; padding: 10px 18px; border-radius: 25px; font-weight: bold; font-size: 13px; transition: 0.2s;
-                <?= $kategori_aktif == 'Semua' ? 'background: #1E104E; color: white;' : 'background: #e9ecef; color: #333;' ?>">
-                 Semua (<?= mysqli_num_rows(mysqli_query($conn, "SELECT id FROM produk")); ?>)
-            </a>
-            
-            <a href="kelola_produk.php?filter=Makanan" style="text-decoration: none; padding: 10px 18px; border-radius: 25px; font-weight: bold; font-size: 13px; transition: 0.2s;
-                <?= $kategori_aktif == 'Makanan' ? 'background: #28a745; color: white;' : 'background: #e9ecef; color: #333;' ?>">
+        <div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-start;">
+            <button type="button" onclick="filterKategoriStok('Semua')" class="btn-filter-stok" id="stok-Semua" style="padding: 10px 20px; border-radius: 25px; font-weight: bold; font-size: 13px; border: none; cursor: pointer; transition: 0.2s; background: #1E104E; color: white;">
+                 Semua
+            </button>
+            <button type="button" onclick="filterKategoriStok('Makanan')" class="btn-filter-stok" id="stok-Makanan" style="padding: 10px 20px; border-radius: 25px; font-weight: bold; font-size: 13px; border: none; cursor: pointer; transition: 0.2s; background: #e9ecef; color: #333;">
                  Makanan
-            </a>
-            
-            <a href="kelola_produk.php?filter=Minuman" style="text-decoration: none; padding: 10px 18px; border-radius: 25px; font-weight: bold; font-size: 13px; transition: 0.2s;
-                <?= $kategori_aktif == 'Minuman' ? 'background: #007bff; color: white;' : 'background: #e9ecef; color: #333;' ?>">
+            </button>
+            <button type="button" onclick="filterKategoriStok('Minuman')" class="btn-filter-stok" id="stok-Minuman" style="padding: 10px 20px; border-radius: 25px; font-weight: bold; font-size: 13px; border: none; cursor: pointer; transition: 0.2s; background: #e9ecef; color: #333;">
                  Minuman
-            </a>
-            
-            <a href="kelola_produk.php?filter=Kebutuhan Pokok" style="text-decoration: none; padding: 10px 18px; border-radius: 25px; font-weight: bold; font-size: 13px; transition: 0.2s;
-                <?= $kategori_aktif == 'Kebutuhan Pokok' ? 'background: #ffc107; color: #212529;' : 'background: #e9ecef; color: #333;' ?>">
+            </button>
+            <button type="button" onclick="filterKategoriStok('Kebutuhan Pokok')" class="btn-filter-stok" id="stok-Kebutuhan Pokok" style="padding: 10px 20px; border-radius: 25px; font-weight: bold; font-size: 13px; border: none; cursor: pointer; transition: 0.2s; background: #e9ecef; color: #333;">
                  Kebutuhan Pokok
-            </a>
-            
-            <a href="kelola_produk.php?filter=Kosmetik" style="text-decoration: none; padding: 10px 18px; border-radius: 25px; font-weight: bold; font-size: 13px; transition: 0.2s;
-                <?= $kategori_aktif == 'Kosmetik' ? 'background: #e83e8c; color: white;' : 'background: #e9ecef; color: #333;' ?>">
+            </button>
+            <button type="button" onclick="filterKategoriStok('Kosmetik')" class="btn-filter-stok" id="stok-Kosmetik" style="padding: 10px 20px; border-radius: 25px; font-weight: bold; font-size: 13px; border: none; cursor: pointer; transition: 0.2s; background: #e9ecef; color: #333;">
                  Kosmetik
-            </a>
+            </button>
+        </div>
+
+        <div style="margin-bottom: 25px; display: flex; justify-content: flex-start;">
+            <input type="text" id="inputCari" onkeyup="fungsiCari()" placeholder="🔍 Cari nama produk di tabel..." style="width: 100%; max-width: 400px; padding: 11px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);">
         </div>
 
         <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+            <table id="tabelProduk" style="width: 100%; border-collapse: collapse; font-size: 14px;">
                 <thead>
                     <tr style="background-color: #f8f9fa; border-bottom: 2px solid #dee2e6; text-align: left;">
-                        <th style="padding: 12px; width: 80px;">Gambar</th>
+                        <th style="padding: 12px; width: 50px; text-align: center;">ID</th>
+                        <th style="padding: 12px; width: 70px; text-align: center;">Gambar</th>
                         <th style="padding: 12px;">Nama Barang</th>
                         <th style="padding: 12px; width: 180px;">Kategori</th>
-                        <th style="padding: 12px; width: 150px;">Harga (Rp)</th>
-                        <th style="padding: 12px; width: 120px;">Stok</th>
+                        <th style="padding: 12px; width: 140px;">Harga (Rp)</th>
+                        <th style="padding: 12px; width: 100px;">Stok</th>
                         <th style="padding: 12px; width: 160px; text-align: center;">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php 
-                    if ($kategori_aktif != 'Semua') {
-                        $filter_clean = mysqli_real_escape_string($conn, $kategori_aktif);
-                        $query = mysqli_query($conn, "SELECT * FROM produk WHERE kategori = '$filter_clean' ORDER BY id DESC");
-                    } else {
-                        $query = mysqli_query($conn, "SELECT * FROM produk ORDER BY kategori ASC, id DESC");
-                    }
-
-                    if(mysqli_num_rows($query) == 0) {
-                        echo "<tr><td colspan='6' style='padding: 20px; text-align: center; color: #888; font-style: italic;'>Belum ada produk di kategori ini.</td></tr>";
-                    }
-
-                    while($row = mysqli_fetch_assoc($query)) {
+                    while($row = mysqli_fetch_assoc($query)) { 
                         $file_gambar = "img/" . $row['nama_barang'] . ".JPEG";
                         if (!file_exists($file_gambar)) { $file_gambar = "img/" . $row['nama_barang'] . ".jpeg"; }
                         if (!file_exists($file_gambar)) { $file_gambar = "img/" . $row['nama_barang'] . ".jpg"; }
                         if (!file_exists($file_gambar)) { $file_gambar = "img/" . $row['nama_barang'] . ".png"; }
                         if (!file_exists($file_gambar)) { $file_gambar = "img/no-image.png"; }
                     ?>
-                    <tr style="border-bottom: 1px solid #e9ecef; background: white;">
+                    <tr class="baris-stok" data-kategori="<?= $row['kategori']; ?>" style="border-bottom: 1px solid #e9ecef; background: white;">
                         <form action="kelola_produk.php" method="POST">
                             <input type="hidden" name="id" value="<?= $row['id']; ?>">
                             
-                            <td style="padding: 8px;">
-                                <img src="<?= $file_gambar; ?>" style="width: 45px; height: 45px; object-fit: contain; border-radius: 4px; border: 1px solid #eee;">
+                            <td style="padding: 12px; text-align: center; color: #666;">
+                                <?= $row['id']; ?>
+                            </td>
 
+                            <td style="padding: 6px; text-align: center;">
+                                <img src="<?= $file_gambar; ?>" style="width: 45px; height: 45px; object-fit: contain; border-radius: 4px; border: 1px solid #eee;">
                             </td>
                             
-                            <td style="padding: 8px;">
-                                <input type="text" name="nama_barang" value="<?= $row['nama_barang']; ?>" required style="padding: 6px; border: 1px solid #ccc; border-radius: 4px; width: 95%; font-weight: 500;">
+                            <td style="padding: 8px 12px;">
+                                <input type="text" name="nama_barang" value="<?= $row['nama_barang']; ?>" required style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
                             </td>
                             
-                            <td style="padding: 8px;">
-                                <select name="kategori" required style="padding: 6px; border: 1px solid #ccc; border-radius: 4px; width: 100%; background: #fff;">
-                                    <option value="Makanan" <?= ($row['kategori'] ?? '') == 'Makanan' ? 'selected' : '' ?>>Makanan</option>
-                                    <option value="Minuman" <?= ($row['kategori'] ?? '') == 'Minuman' ? 'selected' : '' ?>>Minuman</option>
-                                    <option value="Kebutuhan Pokok" <?= ($row['kategori'] ?? '') == 'Kebutuhan Pokok' ? 'selected' : '' ?>>Kebutuhan Pokok</option>
-                                    <option value="Kosmetik" <?= ($row['kategori'] ?? '') == 'Kosmetik' ? 'selected' : '' ?>>Kosmetik</option>
+                            <td style="padding: 8px 12px;">
+                                <select name="kategori" required style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; background: white; box-sizing: border-box;">
+                                    <option value="Makanan" <?= ($row['kategori'] == 'Makanan') ? 'selected' : ''; ?>>Makanan</option>
+                                    <option value="Minuman" <?= ($row['kategori'] == 'Minuman') ? 'selected' : ''; ?>>Minuman</option>
+                                    <option value="Kebutuhan Pokok" <?= ($row['kategori'] == 'Kebutuhan Pokok') ? 'selected' : ''; ?>>Kebutuhan Pokok</option>
+                                    <option value="Kosmetik" <?= ($row['kategori'] == 'Kosmetik') ? 'selected' : ''; ?>>Kosmetik</option>
                                 </select>
                             </td>
                             
-                            <td style="padding: 8px;">
-                                <input type="number" name="harga" value="<?= $row['harga']; ?>" required style="padding: 6px; border: 1px solid #ccc; border-radius: 4px; width: 90%;">
+                            <td style="padding: 8px 12px;">
+                                <input type="number" name="harga" value="<?= $row['harga']; ?>" required style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
                             </td>
                             
-                            <td style="padding: 8px;">
-                                <input type="number" name="stok" value="<?= $row['stok']; ?>" required style="padding: 6px; border: 1px solid #ccc; border-radius: 4px; width: 65px;"> Pcs
+                            <td style="padding: 8px 12px;">
+                                <input type="number" name="stok" value="<?= $row['stok']; ?>" required style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; text-align: center;">
                             </td>
                             
-                            <td style="padding: 8px; text-align: center;">
-                                <button type="submit" name="edit_produk" class="btn btn-warning" style="padding: 6px 12px; font-size: 13px;">
+                            <td style="padding: 12px; text-align: center;">
+                                <button type="submit" name="edit_produk" class="btn btn-warning" style="padding: 6px 12px; font-size: 13px; background: #ffc107; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; color: #212529;">
                                     Update
                                 </button>
-                                <a href="kelola_produk.php?hapus=<?= $row['id']; ?>" class="btn btn-danger" style="padding: 6px 12px; font-size: 13px;" onclick="return confirm('Yakin ingin menghapus produk <?= $row['nama_barang']; ?>?')">
+                                <a href="kelola_produk.php?hapus=<?= $row['id']; ?>" class="btn btn-danger" style="padding: 6px 12px; font-size: 13px; background: #dc3545; color: white; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block; margin-left: 5px;" onclick="return confirm('Yakin ingin menghapus produk <?= $row['nama_barang']; ?>?')">
                                     Hapus
                                 </a>
                             </td>
@@ -213,7 +201,53 @@ include 'layouts/navbar.php';
     </div>
 </div>
 
-<?php 
-include 'layouts/footer.php'; 
-ob_end_flush();
-?>
+<script>
+let katStokTerpilih = "Semua";
+
+function filterKategoriStok(kategori) {
+    katStokTerpilih = kategori;
+    
+    const semuaTombol = document.querySelectorAll('.btn-filter-stok');
+    semuaTombol.forEach(tombol => {
+        tombol.style.background = "#e9ecef";
+        tombol.style.color = "#333";
+    });
+    
+    const tombolAktif = document.getElementById('stok-' + kategori);
+    if(kategori === 'Semua') { tombolAktif.style.background = "#1E104E"; tombolAktif.style.color = "white"; }
+    else if(kategori === 'Makanan') { tombolAktif.style.background = "#28a745"; tombolAktif.style.color = "white"; }
+    else if(kategori === 'Minuman') { tombolAktif.style.background = "#007bff"; tombolAktif.style.color = "white"; }
+    else if(kategori === 'Kebutuhan Pokok') { tombolAktif.style.background = "#ffc107"; tombolAktif.style.color = "#212529"; }
+    else if(kategori === 'Kosmetik') { tombolAktif.style.background = "#e83e8c"; tombolAktif.style.color = "white"; }
+
+    jalankanFilterStokGabungan();
+}
+
+function fungsiCari() {
+    jalankanFilterStokGabungan();
+}
+
+function jalankanFilterStokGabungan() {
+    let kataKunci = document.getElementById("inputCari").value.toUpperCase();
+    let table = document.getElementById("tabelProduk");
+    let tr = table.getElementsByTagName("tr");
+
+    for (let i = 1; i < tr.length; i++) {
+        let kategoriBaris = tr[i].getAttribute("data-kategori");
+        let tdInput = tr[i].getElementsByTagName("input")[1]; 
+        
+        if (tdInput) {
+            let namaProduk = tdInput.value.toUpperCase();
+            
+            let cocokKategori = (katStokTerpilih === "Semua" || kategoriBaris === katStokTerpilih);
+            let cocokKataKunci = (namaProduk.indexOf(kataKunci) > -1);
+
+            if (cocokKategori && cocokKataKunci) {
+                tr[i].style.display = "";
+            } else {
+                tr[i].style.display = "none";
+            }
+        }
+    }
+}
+</script>
