@@ -28,7 +28,7 @@
     						</li>
     
     						<li style="display: inline-block !important;">
-        						<a href="produk.php" class="nav-link" style="padding: 10px 15px !important; text-decoration: none !important; font-weight: bold;">Transaksi Kasir</a>
+        						<a href="transaksi.php" class="nav-link" style="padding: 10px 15px !important; text-decoration: none !important; font-weight: bold;">Transaksi Kasir</a>
     						</li>
     
     						<li style="display: inline-block !important;">

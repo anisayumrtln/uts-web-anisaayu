@@ -11,9 +11,11 @@ include 'koneksi.php';
 $metode = $_POST['metode_bayar'] ?? 'Tunai';
 $id_barang_pilih = $_POST['id_barang'] ?? [];
 $jumlah_pilih = $_POST['jumlah'] ?? [];
+$uang_bayar_raw = $_POST['uang_dibayar'] ?? '0';
+$uang_bayar_angka = (int)str_replace('.', '', $uang_bayar_raw);
 
 if (empty($id_barang_pilih)) {
-    echo "<script>alert('Pilih barang terlebih dahulu!'); window.location='dashboard.php';</script>";
+    echo "<script>alert('Pilih barang terlebih dahulu!'); window.location='transaksi.php';</script>";
     exit;
 }
 
@@ -103,37 +105,29 @@ $total_akhir = 0;
         <span style="font-weight: bold; text-transform: uppercase;"><?= $metode; ?></span>
     </div>
 
-    <?php if ($metode == 'Tunai') : ?>
-        <div class="item-row no-print" style="margin-top: 5px; margin-bottom: 5px;">
-            <span>TUNAI (INPUT)</span>
-            <input type="text" id="uang_bayar" placeholder="Masukkan angka..." style="width: 110px; font-family: monospace; text-align: right;">
+    <?php if ($metode == 'Tunai') : 
+        $kembalian_akhir = $uang_bayar_angka - $total_akhir;
+    ?>
+        <div class="item-row" style="margin-top: 5px; margin-bottom: 5px;">
+            <span>TUNAI</span>
+            <span>Rp <?= number_format($uang_bayar_angka, 0, ',', '.'); ?></span>
         </div>
         
         <div class="line" style="border-top: 1px dotted #000; margin: 5px 0;"></div>
         
         <div class="item-row" style="font-weight: bold; font-size: 15px;">
             <span>KEMBALIAN</span>
-            <span id="teks_kembalian">Rp 0</span>
+            <span>
+                <?php if ($kembalian_akhir >= 0) : ?>
+                    Rp <?= number_format($kembalian_akhir, 0, ',', '.'); ?>
+                <?php else : ?>
+                    Rp 0 (Uang Kurang!)
+                <?php endif; ?>
+            </span>
         </div>
     <?php endif; ?>
 
     <div class="line"></div>
-
-    <?php if ($metode == 'QRIS'): ?>
-        <div style="text-align: center; margin-top: 15px;">
-            <p style="margin: 5px 0;"><strong>Silakan Scan QRIS di Bawah:</strong></p>
-            <img src="img/qris.jpeg" alt="QRIS Pembayaran" style="width: 160px; border: 1px solid #ddd; padding: 5px;">
-            <p style="font-size: 10px; color: #555; margin-top: 5px;">Minimarket Anisa - Payment Gateway</p>
-        </div>
-        <div class="line"></div>
-    <?php elseif ($metode == 'Transfer'): ?>
-        <div style="text-align: center; margin-top: 15px;">
-            <p style="margin: 5px 0;"><strong>Transfer ke Rekening:</strong></p>
-            <p style="margin: 0; font-weight: bold;">BCA: 1234567890</p>
-            <p style="margin: 0;">Anisa Ayu</p>
-        </div>
-        <div class="line"></div>
-    <?php endif; ?>
 
     <div class="footer">
         <p>Terima Kasih Telah Belanja!</p>
@@ -141,48 +135,9 @@ $total_akhir = 0;
     </div>
 
     <div class="no-print">
-        <a href="#" onclick="window.print()" class="btn" style="background: #28a745; margin-bottom: 10px;">Cetak Struk Sekarang</a>
-        <a href="dashboard.php" class="btn">Kembali ke Dashboard</a>
+        <a href="#" onclick="window.print()" class="btn" style="background: #28a745; margin-bottom: 10px; font-weight: bold;">Cetak Struk Sekarang</a>
+        <a href="transaksi.php" class="btn">Kembali ke Transaksi</a>
     </div>
-
-    <script>
-    const inputBayar = document.getElementById('uang_bayar');
-    if (inputBayar) {
-        inputBayar.addEventListener('keyup', function(e) {
-            let nomor = this.value.replace(/[^,\d]/g, '').toString();
-            let split = nomor.split(',');
-            let sisa = split[0].length % 3;
-            let rupiah = split[0].substr(0, sisa);
-            let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
-
-            if (ribuan) {
-                let separator = sisa ? '.' : '';
-                rupiah += separator + ribuan.join('.');
-            }
-
-            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
-            this.value = rupiah;
-        
-            hitungKembalian(<?= $total_akhir ?>);
-        });
-    }
-
-    function hitungKembalian(total) {
-        let bayarRaw = document.getElementById('uang_bayar').value.replace(/\./g, '');
-        let bayar = parseInt(bayarRaw) || 0;
-    
-        let kembali = bayar - total;
-        let teks = document.getElementById('teks_kembalian');
-
-        if (bayar === 0) {
-            teks.innerText = "Rp 0";
-        } else if (kembali >= 0) {
-            teks.innerText = "Rp " + kembali.toLocaleString('id-ID');
-        } else {
-            teks.innerText = "Rp 0 (Uang Kurang!)";
-        }
-    }
-    </script>
 
 </body>
 </html>
