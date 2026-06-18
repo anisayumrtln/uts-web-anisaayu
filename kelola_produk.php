@@ -51,6 +51,32 @@ include 'layouts/navbar.php';
 $query = mysqli_query($conn, "SELECT * FROM produk ORDER BY id ASC");
 ?>
 
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <style>
+        /* Custom styling agar Select2 serasi dengan desain form Anda */
+        .select2-container--default .select2-selection--single {
+            height: 36px !important;
+            border: 1px solid #ccc !important;
+            border-radius: 4px !important;
+            display: flex;
+            align-items: center;
+        }
+        .select2-container {
+            width: 100% !important;
+        }
+    </style>
+</head>
+<body>
+
 <?php if (isset($_GET['status'])): ?>
     <?php 
         $pesan = "";
@@ -64,7 +90,13 @@ $query = mysqli_query($conn, "SELECT * FROM produk ORDER BY id ASC");
     ?>
     <?php if ($pesan != ""): ?>
         <script>
-            alert("<?= $pesan; ?>");
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil!',
+                text: "<?= $pesan; ?>",
+                showConfirmButton: false,
+                timer: 3000
+            });
             window.location.href = "kelola_produk.php";
         </script>
     <?php endif; ?>
@@ -77,14 +109,14 @@ $query = mysqli_query($conn, "SELECT * FROM produk ORDER BY id ASC");
 
         <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #e9ecef; margin-bottom: 30px;">
             <h4 style="margin-top: 0; margin-bottom: 15px; color: #1E104E;">➕ Tambah Produk Baru</h4>
-            <form action="kelola_produk.php" method="POST" style="display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end;">
+            <form id="formTambahProduk" action="kelola_produk.php" method="POST" style="display: flex; flex-wrap: wrap; gap: 15px; align-items: flex-end;">
                 <div style="flex: 2; min-width: 200px;">
                     <label style="display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px;">Nama Barang:</label>
-                    <input type="text" name="nama_barang" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                    <input type="text" name="nama_barang" id="tambah_nama" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; height: 36px;">
                 </div>
                 <div style="flex: 1.5; min-width: 150px;">
                     <label style="display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px;">Kategori:</label>
-                    <select name="kategori" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; background: white; box-sizing: border-box; height: 34px;">
+                    <select name="kategori" id="tambah_kategori" class="select2-aktif" required>
                         <option value="">-- Pilih Kategori --</option>
                         <option value="Makanan">Makanan</option>
                         <option value="Minuman">Minuman</option>
@@ -94,34 +126,24 @@ $query = mysqli_query($conn, "SELECT * FROM produk ORDER BY id ASC");
                 </div>
                 <div style="flex: 1.2; min-width: 120px;">
                     <label style="display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px;">Harga (Rp):</label>
-                    <input type="number" name="harga" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                    <input type="number" name="harga" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; height: 36px;">
                 </div>
                 <div style="flex: 1; min-width: 80px;">
                     <label style="display: block; font-size: 12px; font-weight: bold; margin-bottom: 5px;">Stok:</label>
-                    <input type="number" name="stok" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                    <input type="number" name="stok" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; height: 36px;">
                 </div>
-                <button type="submit" name="tambah_produk" style="padding: 9px 20px; background: #28a745; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; height: 34px;">
+                <button type="submit" name="tambah_produk" onclick="konfirmasiTambah(event)" style="padding: 9px 20px; background: #28a745; color: white; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; height: 36px;">
                     Simpan Produk
                 </button>
             </form>
         </div>
 
         <div style="margin-bottom: 20px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: flex-start;">
-            <button type="button" onclick="filterKategoriStok('Semua')" class="btn-filter-stok" id="stok-Semua" style="padding: 10px 20px; border-radius: 25px; font-weight: bold; font-size: 13px; border: none; cursor: pointer; transition: 0.2s; background: #1E104E; color: white;">
-                 Semua
-            </button>
-            <button type="button" onclick="filterKategoriStok('Makanan')" class="btn-filter-stok" id="stok-Makanan" style="padding: 10px 20px; border-radius: 25px; font-weight: bold; font-size: 13px; border: none; cursor: pointer; transition: 0.2s; background: #e9ecef; color: #333;">
-                 Makanan
-            </button>
-            <button type="button" onclick="filterKategoriStok('Minuman')" class="btn-filter-stok" id="stok-Minuman" style="padding: 10px 20px; border-radius: 25px; font-weight: bold; font-size: 13px; border: none; cursor: pointer; transition: 0.2s; background: #e9ecef; color: #333;">
-                 Minuman
-            </button>
-            <button type="button" onclick="filterKategoriStok('Kebutuhan Pokok')" class="btn-filter-stok" id="stok-Kebutuhan Pokok" style="padding: 10px 20px; border-radius: 25px; font-weight: bold; font-size: 13px; border: none; cursor: pointer; transition: 0.2s; background: #e9ecef; color: #333;">
-                 Kebutuhan Pokok
-            </button>
-            <button type="button" onclick="filterKategoriStok('Kosmetik')" class="btn-filter-stok" id="stok-Kosmetik" style="padding: 10px 20px; border-radius: 25px; font-weight: bold; font-size: 13px; border: none; cursor: pointer; transition: 0.2s; background: #e9ecef; color: #333;">
-                 Kosmetik
-            </button>
+            <button type="button" onclick="filterKategoriStok('Semua')" class="btn-filter-stok" id="stok-Semua" style="padding: 10px 20px; border-radius: 25px; font-weight: bold; font-size: 13px; border: none; cursor: pointer; transition: 0.2s; background: #1E104E; color: white;">Semua</button>
+            <button type="button" onclick="filterKategoriStok('Makanan')" class="btn-filter-stok" id="stok-Makanan" style="padding: 10px 20px; border-radius: 25px; font-weight: bold; font-size: 13px; border: none; cursor: pointer; transition: 0.2s; background: #e9ecef; color: #333;">Makanan</button>
+            <button type="button" onclick="filterKategoriStok('Minuman')" class="btn-filter-stok" id="stok-Minuman" style="padding: 10px 20px; border-radius: 25px; font-weight: bold; font-size: 13px; border: none; cursor: pointer; transition: 0.2s; background: #e9ecef; color: #333;">Minuman</button>
+            <button type="button" onclick="filterKategoriStok('Kebutuhan Pokok')" class="btn-filter-stok" id="stok-Kebutuhan Pokok" style="padding: 10px 20px; border-radius: 25px; font-weight: bold; font-size: 13px; border: none; cursor: pointer; transition: 0.2s; background: #e9ecef; color: #333;">Kebutuhan Pokok</button>
+            <button type="button" onclick="filterKategoriStok('Kosmetik')" class="btn-filter-stok" id="stok-Kosmetik" style="padding: 10px 20px; border-radius: 25px; font-weight: bold; font-size: 13px; border: none; cursor: pointer; transition: 0.2s; background: #e9ecef; color: #333;">Kosmetik</button>
         </div>
 
         <div style="margin-bottom: 25px; display: flex; justify-content: flex-start;">
@@ -135,7 +157,7 @@ $query = mysqli_query($conn, "SELECT * FROM produk ORDER BY id ASC");
                         <th style="padding: 12px; width: 50px; text-align: center;">ID</th>
                         <th style="padding: 12px; width: 70px; text-align: center;">Gambar</th>
                         <th style="padding: 12px;">Nama Barang</th>
-                        <th style="padding: 12px; width: 180px;">Kategori</th>
+                        <th style="padding: 12px; width: 220px;">Kategori</th>
                         <th style="padding: 12px; width: 140px;">Harga (Rp)</th>
                         <th style="padding: 12px; width: 100px;">Stok</th>
                         <th style="padding: 12px; width: 160px; text-align: center;">Aksi</th>
@@ -167,7 +189,7 @@ $query = mysqli_query($conn, "SELECT * FROM produk ORDER BY id ASC");
                             </td>
                             
                             <td style="padding: 8px 12px;">
-                                <select name="kategori" required style="width: 100%; padding: 6px; border: 1px solid #ccc; border-radius: 4px; background: white; box-sizing: border-box;">
+                                <select name="kategori" class="select2-aktif" required>
                                     <option value="Makanan" <?= ($row['kategori'] == 'Makanan') ? 'selected' : ''; ?>>Makanan</option>
                                     <option value="Minuman" <?= ($row['kategori'] == 'Minuman') ? 'selected' : ''; ?>>Minuman</option>
                                     <option value="Kebutuhan Pokok" <?= ($row['kategori'] == 'Kebutuhan Pokok') ? 'selected' : ''; ?>>Kebutuhan Pokok</option>
@@ -184,10 +206,12 @@ $query = mysqli_query($conn, "SELECT * FROM produk ORDER BY id ASC");
                             </td>
                             
                             <td style="padding: 12px; text-align: center;">
-                                <button type="submit" name="edit_produk" class="btn btn-warning" style="padding: 6px 12px; font-size: 13px; background: #ffc107; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; color: #212529;">
+                                <button type="submit" name="edit_produk" class="btn btn-warning" style="padding: 6px 12px; font-size: 13px; background: #ffc107; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; color: #212529;" 
+                                        onclick="konfirmasiUpdate(event, this)">
                                     Update
                                 </button>
-                                <a href="kelola_produk.php?hapus=<?= $row['id']; ?>" class="btn btn-danger" style="padding: 6px 12px; font-size: 13px; background: #dc3545; color: white; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block; margin-left: 5px;" onclick="return confirm('Yakin ingin menghapus produk <?= $row['nama_barang']; ?>?')">
+                                <a href="kelola_produk.php?hapus=<?= $row['id']; ?>" class="btn btn-danger" style="padding: 6px 12px; font-size: 13px; background: #dc3545; color: white; text-decoration: none; border-radius: 4px; font-weight: bold; display: inline-block; margin-left: 5px;" 
+                                   onclick="konfirmasiHapus(event, this)">
                                     Hapus
                                 </a>
                             </td>
@@ -202,6 +226,11 @@ $query = mysqli_query($conn, "SELECT * FROM produk ORDER BY id ASC");
 </div>
 
 <script>
+// INISIALISASI SELECT2 KETIKA HALAMAN SELESAI DIMUAT
+$(document).ready(function() {
+    $('.select2-aktif').select2();
+});
+
 let katStokTerpilih = "Semua";
 
 function filterKategoriStok(kategori) {
@@ -250,4 +279,93 @@ function jalankanFilterStokGabungan() {
         }
     }
 }
-</script>
+
+// ==========================================
+// FUNGSI KONFIRMASI SWEETALERT JAVASCRIPT
+// ==========================================
+
+function konfirmasiTambah(e) {
+    let form = document.getElementById('formTambahProduk');
+    
+    if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+    }
+    
+    e.preventDefault();
+
+    let namaProduk = document.getElementById('tambah_nama').value;
+
+    Swal.fire({
+        title: 'Tambah Produk Baru?',
+        text: "Apakah Anda yakin ingin menambahkan '" + namaProduk + "' ke dalam daftar data stok?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonColor: '#28a745',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, Simpan!',
+        cancelButtonText: 'Batal',
+        color: '#212529'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            let hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'tambah_produk';
+            hiddenInput.value = 'true';
+            form.appendChild(hiddenInput);
+            
+            form.submit();
+        }
+    });
+}
+
+function konfirmasiUpdate(e, tombol) {
+    e.preventDefault();
+    
+    let baris = tombol.closest('tr');
+    let inputNama = baris.querySelector('input[name="nama_barang"]');
+    let namaProduk = inputNama ? inputNama.value : "produk ini";
+
+    Swal.fire({
+        title: 'Apakah Anda yakin?',
+        text: "Data produk '" + namaProduk + "' akan diperbarui!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#ffc107',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ya, Update!',
+        cancelButtonText: 'Batal',
+        color: '#212529'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            tombol.closest('form').submit();
+        }
+    });
+}
+
+function konfirmasiHapus(e, elemenA) {
+    e.preventDefault();
+    
+    let baris = elemenA.closest('tr');
+    let inputNama = baris.querySelector('input[name="nama_barang"]');
+    let namaProduk = inputNama ? inputNama.value : "produk ini";
+    let urlHapus = elemenA.getAttribute('href');
+
+    Swal.fire({
+        title: 'Yakin ingin menghapus?',
+        text: "Produk '" + namaProduk + "' akan dihapus permanen!",
+        icon: 'error',
+        showCancelButton: true,
+        confirmButtonColor: '#dc3545',
+        cancelButtonColor: '#3085d6',
+        confirmButtonText: 'Ya, Hapus!',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = urlHapus;
+        }
+    });
+}
+</script>     
+</body>
+</html>
