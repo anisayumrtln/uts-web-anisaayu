@@ -285,17 +285,25 @@ function jalankanFilterStokGabungan() {
 // ==========================================
 
 function konfirmasiTambah(e) {
+    e.preventDefault(); 
+
     let form = document.getElementById('formTambahProduk');
-    
-    if (!form.checkValidity()) {
-        form.reportValidity();
-        return;
+    let namaProduk = document.getElementById('tambah_nama').value.trim();
+    let kategori = document.getElementById('tambah_kategori').value;
+    let harga = form.querySelector('input[name="harga"]').value;
+    let stok = form.querySelector('input[name="stok"]').value;
+
+    if (namaProduk === "" || kategori === "" || harga === "" || stok === "") {
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal Menyimpan!',
+            text: 'Semua bidang data produk (Nama, Kategori, Harga, dan Stok) wajib diisi terlebih dahulu!',
+            confirmButtonColor: '#dc3545',
+            confirmButtonText: 'Siap, Saya Isi Dulu'
+        });
+        return; 
     }
     
-    e.preventDefault();
-
-    let namaProduk = document.getElementById('tambah_nama').value;
-
     Swal.fire({
         title: 'Tambah Produk Baru?',
         text: "Apakah Anda yakin ingin menambahkan '" + namaProduk + "' ke dalam daftar data stok?",
