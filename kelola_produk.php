@@ -150,6 +150,18 @@ $query = mysqli_query($conn, "SELECT * FROM produk ORDER BY id ASC");
             <input type="text" id="inputCari" onkeyup="fungsiCari()" placeholder="🔍 Cari nama produk di tabel..." style="width: 100%; max-width: 400px; padding: 11px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);">
         </div>
 
+        <div style="margin-bottom: 20px; display: flex; gap: 10px;">
+            <a href="ekspor.php" style="padding: 10px 20px; background: #28a745; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                📥 Ekspor ke Excel
+            </a>
+            <a href="import.php" style="padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                📤 Import dari Excel
+            </a>
+            <a href="ekspor_word.php" style="padding: 10px 20px; background: #17a2b8; color: white; text-decoration: none; border-radius: 6px; font-weight: bold; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                📝 Ekspor ke Word
+            </a>
+        </div>
+
         <div style="overflow-x: auto;">
             <table id="tabelProduk" style="width: 100%; border-collapse: collapse; font-size: 14px;">
                 <thead>
@@ -226,7 +238,7 @@ $query = mysqli_query($conn, "SELECT * FROM produk ORDER BY id ASC");
 </div>
 
 <script>
-// INISIALISASI SELECT2 KETIKA HALAMAN SELESAI DIMUAT
+    
 $(document).ready(function() {
     $('.select2-aktif').select2();
 });
